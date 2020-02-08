@@ -1,7 +1,7 @@
-import React, { PureComponent } from "react";
-import List from "./List";
+import React, { Component } from "react";
+import List from "./code_samples/List";
 
-class App extends PureComponent {
+class App extends Component {
     render() {
         return (
             <List />
