@@ -3,9 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     mode: "development",
-    entry: {
-        main: "./src/app.jsx"
-    },
+    entry: ["@babel/polyfill", "./src/bootstrap.jsx"],
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "app.js"
