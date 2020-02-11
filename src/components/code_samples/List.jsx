@@ -1,12 +1,17 @@
 import React, { Component } from "react";
-import CodeSample from "./CodeSample";
 import coreApp from "../../core/app";
+import CodeSampleEditor from "./CodeSampleEditor";
+import CodeSampleListItem from "./CodeSampleListItem";
+
 
 class List extends Component {
     constructor(props) {
         super(props);
 
         this.state = {list: []};
+
+        this.codeEditHandler = this.codeEditHandler.bind(this);
+        this.codeDeleteHandler = this.codeDeleteHandler.bind(this);
     }
 
     componentDidMount() {
@@ -15,11 +20,21 @@ class List extends Component {
             .catch(error => console.log(error));
     }
 
+    codeEditHandler(sampleId) {
+        console.log('should edit sample with id: ', sampleId);
+    }
+
+    codeDeleteHandler(sampleId) {
+        console.log('should delete sample with id: ', sampleId);
+    }
+
     render() {
         if (this.state.list.length == 0)
             return null;
 
-        const listItems = this.state.list.map(item => <CodeSample key={item.id} codeId={item.id} createdTime={item.created_time} />);
+        const listItems = this.state.list.map(item => <CodeSampleListItem key={item.id} 
+            codeId={item.id} codeName={item.name} codeCreated={item.created_time} codeEdited={item.edited_time} 
+            onCodeEdit={this.codeEditHandler} onCodeDelete={this.codeDeleteHandler}/>);
 
         return (
             <div>{listItems}</div>

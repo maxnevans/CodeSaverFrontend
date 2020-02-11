@@ -5,12 +5,32 @@ class App {
         this._qm = new QueryManager();
     }
 
-    getList() {
+    async getList() {
         return this._qm.getList();
     }
 
-    getCodeSample() {
-        return this._qm.getCodeSample();
+    async getCodeSample(sampleId) {
+        return this._qm.getCodeSample(sampleId);
+    }
+
+    async editCodeSample(sampleId, codeName, newCodeContent) {
+        return this._qm.editCodeSample(sampleId, codeName, newCodeContent);
+    }
+
+    async uploadEditCodeSample(sampleId, codeName, fileCodeSample) {
+        return this._qm.uploadEditCodeSample(sampleId, codeName, fileCodeSample);
+    }
+
+    async createCodeSample(codeName, newCodeSample) {
+        return this._qm.createCodeSample(codeName, newCodeSample);
+    }
+
+    async uploadCreateCodeSample(codeName, fileCodeSample) {
+        return this._qm.uploadCreateCodeSample(codeName, fileCodeSample);
+    }
+
+    async deleteCodeSample(sampleId) {
+        return this._qm.deleteCodeSample(sampleId);
     }
 }
 

@@ -1,14 +1,52 @@
-import { GET_LIST } from "../destiantions";
+import { GET_LIST, EDIT_CODE, UPLOAD_CREATE_CODE, UPLOAD_EDIT_CODE, CREATE_CODE } from "../destiantions";
 
 class QueryManager {
-    
-
-    getList() {
+    async getList() {
         return this._performJSONQuery(GET_LIST);
     }
 
-    getCodeSample(sampleId) {
+    async getCodeSample(sampleId) {
         return this._performJSONQuery(GET_LIST, [sampleId]);
+    }
+
+    async editCodeSample(sampleId, codeName, newCodeSample) {
+        const form = new FormData();
+
+        form.append('code-name', codeName);
+        form.append('code-sample', newCodeSample);
+
+        return this._performJSONQuery(EDIT_CODE, [sampleId], form, false);
+    }
+
+    async uploadEditCodeSample(sampleId, codeName, codeSampleFile) {
+        const form = new FormData();
+
+        form.append('code-name', codeName);
+        form.append('code-file', codeSampleFile);
+
+        return this._performJSONQuery(UPLOAD_EDIT_CODE, [sampleId], form, false);
+    } 
+
+    async uploadCreateCodeSample(codeName, codeSampleFile) {
+        const form = new FormData();
+
+        form.append('code-name', codeName);
+        form.append('code-file', codeSampleFile);
+
+        return this._performJSONQuery(UPLOAD_CREATE_CODE, null, form, false);
+    }
+
+    async createCodeSample(codeName, newCodeSample) {
+        const form = new FormData();
+
+        form.append('code-name', codeName);
+        form.append('code-sample', newCodeSample);
+
+        return this._performJSONQuery(CREATE_CODE, null, form, false);
+    }
+
+    async deleteCodeSample(sampleId) {
+        return this._performJSONQuery(DELETE_CODE, [sampleId]);
     }
 
     async _performJSONQuery(destination, destinationDetails = null, bodyData = null, isJSON = true) {
@@ -18,9 +56,6 @@ class QueryManager {
 
         if ((options.method != 'GET') && (options.method != 'HEAD')) {
             options.body = isJSON ? JSON.stringify(bodyData) : bodyData;
-            options.headers = {
-                'Content-type: ': isJSON ? 'application/json' : 'multipart/form-data'
-            };
         }
         
         const response = await fetch(destination.url(destinationDetails), options);

@@ -20,12 +20,22 @@ export const EDIT_CODE = {
     method: 'put'
 };
 
+export const UPLOAD_EDIT_CODE = {
+    url: () => API_SOURCE + '/code/upload',
+    method: 'put'
+};
+
 export const CREATE_CODE = {
     url: () => API_SOURCE + '/code/create',
     method: 'post'
 };
 
-export const UPLOAD_CODE = {
+export const UPLOAD_CREATE_CODE = {
     url: () => API_SOURCE + '/code/upload',
     method: 'post'
 };
+
+export const DELETE_CODE = {
+    url: (details) => API_SOURCE + '/code/' + details[0],
+    method: 'delete'
+}
