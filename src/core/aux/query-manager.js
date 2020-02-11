@@ -1,4 +1,4 @@
-import { GET_LIST, EDIT_CODE, UPLOAD_CREATE_CODE, UPLOAD_EDIT_CODE, CREATE_CODE } from "../destiantions";
+import { GET_CODE, GET_LIST, EDIT_CODE, UPLOAD_CREATE_CODE, UPLOAD_EDIT_CODE, CREATE_CODE } from "../destiantions";
 
 class QueryManager {
     async getList() {
@@ -6,7 +6,7 @@ class QueryManager {
     }
 
     async getCodeSample(sampleId) {
-        return this._performJSONQuery(GET_LIST, [sampleId]);
+        return this._performJSONQuery(GET_CODE, [sampleId]);
     }
 
     async editCodeSample(sampleId, codeName, newCodeSample) {
@@ -59,8 +59,15 @@ class QueryManager {
         }
         
         const response = await fetch(destination.url(destinationDetails), options);
+        const array = await response.arrayBuffer();
 
-        return await response.json();
+        if (array.byteLength > 0) {
+            const dec = new TextDecoder('utf-8');
+
+            return JSON.parse(dec.decode(array));
+        }
+
+        return null;
     }
 }
 
