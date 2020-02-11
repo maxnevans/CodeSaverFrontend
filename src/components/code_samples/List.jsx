@@ -21,7 +21,7 @@ class List extends Component {
     }
 
     codeEditHandler(sampleId) {
-        console.log('should edit sample with id: ', sampleId);
+        this.props.onEdit(sampleId);
     }
 
     codeDeleteHandler(sampleId) {
