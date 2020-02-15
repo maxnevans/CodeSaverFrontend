@@ -71,6 +71,7 @@ class App extends Component {
 
         return (
             <div className="app">
+                <h1>Code Saver</h1>
                 {screenItem}
             </div>
         );

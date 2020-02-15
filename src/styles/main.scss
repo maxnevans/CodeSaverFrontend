@@ -1,5 +1,50 @@
-.files {
-    width: 100px;
-    height: 100px;
-    background: red;
+.code-source {
+    min-height: 500px;
+    min-width: 900px;
+    border: 1px solid rgb(47, 63, 94);
+    border-radius: 5px;
+}
+
+.code-source-files {
+    margin: 0 auto;
+    text-align: center;
+    vertical-align: center;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+.code-source-file-name {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgb(221, 221, 221);
+    color: rgb(75, 75, 75);
+}
+
+.code-source-files-description {
+    width: fit-content;
+    height: fit-content;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+.code-source-text {
+    min-height: 500px;
+    min-width: 900px;
+    margin: 0;
+}
+
+.code-name {
+    display: inline;
+}
+
+.code-name-description {
+    display: inline;
+}
+
+.input-wrong {
+    border: 2px solid red;
+}
+
+.code-source-wrong {
+    border: 2px solid red;
 }

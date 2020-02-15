@@ -1,4 +1,4 @@
-import { GET_CODE, GET_LIST, EDIT_CODE, UPLOAD_CREATE_CODE, UPLOAD_EDIT_CODE, CREATE_CODE } from "../destiantions";
+import { GET_CODE, GET_LIST, EDIT_CODE, UPLOAD_CREATE_CODE, UPLOAD_EDIT_CODE, CREATE_CODE, DELETE_CODE } from "../destiantions";
 
 class QueryManager {
     async getList() {
@@ -23,6 +23,8 @@ class QueryManager {
 
         form.append('code-name', codeName);
         form.append('code-file', codeSampleFile);
+
+        console.log(form);
 
         return this._performJSONQuery(UPLOAD_EDIT_CODE, [sampleId], form, false);
     } 

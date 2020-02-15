@@ -21,7 +21,7 @@ export const EDIT_CODE = {
 };
 
 export const UPLOAD_EDIT_CODE = {
-    url: () => API_SOURCE + '/code/upload',
+    url: (details) => API_SOURCE + '/code/upload/' + details[0],
     method: 'put'
 };
 
