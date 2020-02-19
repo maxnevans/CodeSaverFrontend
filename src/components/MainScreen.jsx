@@ -63,7 +63,7 @@ class MainScreen extends PureComponent {
         if (code.type == CodeSource.SOURCE_TEXT) {
             coreApp.createCodeSample(code.name, code.data)
                 .then(res => this.setState(state => {
-                    let list = state.codeSamplesList;
+                    let list = state.codeSamplesList.slice();
 
                     code.id = res.codeSampleId;
                     code.created_time = (new Date()).toLocaleString();
@@ -85,13 +85,13 @@ class MainScreen extends PureComponent {
 
             coreApp.uploadCreateCodeSample(code.name, file)
                 .then(res => this.setState(state => {
-                    let list = state.codeSamplesList;
+                    let list = state.codeSamplesList.slice();
 
                     code.id = res.codeSampleId;
                     code.data = null;
                     code.created_time = (new Date()).toLocaleString();
 
-                    list.push(code);
+                    list.splice(0, 0, code);
 
                     return {
                         codeSamplesList: list,
