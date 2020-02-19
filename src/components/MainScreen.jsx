@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import App from './App';
-import CodeSampleCreator from './code_samples/CodeSampleCreator';
+import CodeSampleEditor from './code_samples/CodeSampleEditor';
 import List from './code_samples/List';
 import coreApp from '../core/app';
 import CodeSource from './code_samples/code_source/CodeSource';
@@ -117,7 +117,7 @@ class MainScreen extends Component {
     render() {
         return (
             <div className="main-screen">
-                <CodeSampleCreator code={this.state.newCodeSample} onChange={this.codeChangeHandler} onSave={this.codeSaveHandler}/>
+                <CodeSampleEditor code={this.state.newCodeSample} onChange={this.codeChangeHandler} onSave={this.codeSaveHandler}/>
                 <List list={this.state.codeSamplesList} onDelete={this.codeDeleteHandler} onEdit={this.codeEditHandler } />
             </div>
         );

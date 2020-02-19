@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import List from "./code_samples/List";
-import CodeSampleCreator from "./code_samples/CodeSampleCreator";
 import MainScreen from "./MainScreen";
 import EditScreen from "./EditScreen";
 

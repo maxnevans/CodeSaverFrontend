@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CodeSampleCreator from './code_samples/CodeSampleCreator';
+import CodeSampleEditor from './code_samples/CodeSampleEditor';
 import App from './App';
 import coreApp from '../core/app';
 import CodeSource from './code_samples/code_source/CodeSource';
@@ -78,7 +78,7 @@ class EditScreen extends Component {
         return (
             <div className="edit-screen">
                 <button onClick={this.goBackClickHandler} >Back</button>
-                <CodeSampleCreator onChange={this.codeChangeHandler} code={this.state.code} onSave={this.codeSaveHandler}/>
+                <CodeSampleEditor onChange={this.codeChangeHandler} code={this.state.code} onSave={this.codeSaveHandler}/>
             </div>
         );
     }
