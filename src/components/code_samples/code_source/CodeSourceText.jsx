@@ -1,53 +1,84 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import Prism from 'prismjs';
 import ContentEditable from 'react-contenteditable'
 
-class CodeSourceText extends Component {
+class CodeSourceText extends PureComponent {
     constructor(props) {
         super(props);
 
-        this.state = {
-            clearCode: this.props.code,
-            highlightedCode: this.props.code
-        };
+        this.restoreCaretPosition = () => null;
+
         this.codeEditor = React.createRef();
         this.codeChangeHandler = this.codeChangeHandler.bind(this);
-        this.specialKeysHandler = this.specialKeysHandler.bind(this);
     }
 
-    specialKeysHandler(event) {
-        if (event.code == 'Tab') {
-            const countSpaces = 4;
-            const spaces = ' '.repeat(countSpaces);
-
-            this.props.onCodeChange(this.codeEditor.current.innerText + spaces);
-            event.preventDefault();
-        } 
-        
+    selectionSaveCaretPosition(container) {
+        const selection = window.getSelection();
+    
+        if (!selection || selection.rangeCount === 0) {
+            return () => null;
+        }
+    
+        const range = selection.getRangeAt(0);
+        const clone = range.cloneRange();
+    
+        // find the range start index
+        clone.selectNodeContents(container);
+        clone.setStart(container, 0);
+        clone.setEnd(range.startContainer, range.startOffset);
+        const startIndex = clone.toString().length;
+    
+        // find the range end index
+        clone.selectNodeContents(container);
+        clone.setStart(container, 0);
+        clone.setEnd(range.endContainer, range.endOffset);
+        const endIndex = clone.toString().length;
+    
+        return function restoreCaretPosition() {
+            const start = this.getTextNodeAtPosition(container, startIndex);
+            const end = this.getTextNodeAtPosition(container, endIndex);
+            const newRange = new Range();
+    
+            newRange.setStart(start.node, start.position);
+            newRange.setEnd(end.node, end.position);
+    
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            container.focus();
+        };
     }
 
-    componentDidMount() {
-        this.codeEditor.current.onkeydown = this.specialKeysHandler;
+    getTextNodeAtPosition(rootEl, index) {
+        const treeWalker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, function next(elem) {
+            if(index > elem.textContent.length) {
+                index -= elem.textContent.length;
+                return NodeFilter.FILTER_REJECT;
+            }
+            return NodeFilter.FILTER_ACCEPT;
+        });
+        const node = treeWalker.nextNode();
+    
+        return {
+            node: node ? node : rootEl,
+            position: node ? index : 0,
+        };
     }
 
     codeChangeHandler(event) {
+        this.restoreCaretPosition = this.selectionSaveCaretPosition(this.codeEditor.current);
         this.props.onCodeChange(this.codeEditor.current.innerText);
     }
 
     componentDidUpdate() {
-        if (this.state.clearCode !== this.props.code) {
-            this.setState({
-                clearCode: this.props.code,
-                highlightedCode: Prism.highlight(this.props.code, Prism.languages.javascript, 'javascript')
-            });
-        }
+        this.restoreCaretPosition();
     }
 
-    render() {
+    render() {        
+        const highlighted = Prism.highlight(this.props.code, Prism.languages.javascript, 'javascript');
+
         return (
-            <ContentEditable html={this.state.highlightedCode} 
-                className="code-source-text language-javascript" innerRef={this.codeEditor} onChange={this.codeChangeHandler} 
-                style={{'whiteSpace': 'pre'}} />
+            <ContentEditable html={highlighted} 
+                className="code-source-text language-javascript" innerRef={this.codeEditor} onChange={this.codeChangeHandler} />
         );
     }
 }

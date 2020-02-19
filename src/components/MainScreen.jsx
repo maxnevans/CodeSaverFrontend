@@ -65,8 +65,6 @@ class MainScreen extends Component {
                 .then(res => this.setState(state => {
                     let list = state.codeSamplesList;
 
-                    console.log(res.codeSampleId);
-
                     code.id = res.codeSampleId;
                     code.created_time = (new Date()).toLocaleString();
 
