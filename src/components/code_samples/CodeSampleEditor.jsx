@@ -68,8 +68,13 @@ class CodeSampleEditor extends PureComponent {
             
 
             <div className="code-creator">
-                <label htmlFor="" className="code-name-description">Code sample name: </label>
-                <input type="text" className={"code-name " + inputNameWrong} onChange={this.codeNameChangeHandler} value={this.props.code.name} />
+                <input 
+                    placeholder="Sample name" 
+                    type="text" 
+                    className={"code-name " + inputNameWrong} 
+                    onChange={this.codeNameChangeHandler} 
+                    value={this.props.code.name} 
+                />
                 {createdItem}
                 {editedItem}
                 <CodeSource isWrong={inputCodeWrong} code={this.props.code.data} onSourceChange={this.codeChangeHandler} />
