@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import MainScreen from "./MainScreen";
 import EditScreen from "./EditScreen";
 
-class App extends Component {
+class App extends PureComponent {
     static MAIN_SCREEN = 'main';
     static EDIT_SCREEN = 'edit';
 

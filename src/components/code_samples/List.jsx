@@ -1,10 +1,8 @@
-import React, { Component } from "react";
-import coreApp from "../../core/app";
-import CodeSampleEditor from "./CodeSampleEditor";
+import React, { PureComponent } from "react";
 import CodeSampleListItem from "./CodeSampleListItem";
 
 
-class List extends Component {
+class List extends PureComponent {
     static defaultProps = {
         list: []
     }

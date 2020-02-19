@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import CodeSampleEditor from './code_samples/CodeSampleEditor';
 import App from './App';
 import coreApp from '../core/app';
 import CodeSource from './code_samples/code_source/CodeSource';
 
-class EditScreen extends Component {
+class EditScreen extends PureComponent {
     constructor(props) {
         super(props);
 

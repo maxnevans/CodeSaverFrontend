@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import coreApp from "../../core/app";
 
-class CodeSampleUploader extends Component {
+class CodeSampleUploader extends PureComponent {
     constructor(props) {
         super(props);
 

@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import CodeSourceText from "./CodeSourceText";
 import CodeSourceFile from "./CodeSourceFile";
 
-class CodeSource extends Component {
+class CodeSource extends PureComponent {
     static SOURCE_FILES = 'files';
     static SOURCE_TEXT = 'text';
 

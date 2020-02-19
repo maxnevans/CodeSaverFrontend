@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import App from './App';
 import CodeSampleEditor from './code_samples/CodeSampleEditor';
 import List from './code_samples/List';
 import coreApp from '../core/app';
 import CodeSource from './code_samples/code_source/CodeSource';
 
-class MainScreen extends Component {
+class MainScreen extends PureComponent {
     constructor(props) {
         super(props);
 

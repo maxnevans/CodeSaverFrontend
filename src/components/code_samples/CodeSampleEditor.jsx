@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import CodeSource from "./code_source/CodeSource";
 
-class CodeSampleEditor extends Component {
+class CodeSampleEditor extends PureComponent {
     constructor(props) {
         super(props);
 

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from 'prop-types';
 
-class CodeSampleListItem extends Component {
+class CodeSampleListItem extends PureComponent {
     static defaultProps = {
         codeId: null,
         codeName: '<name not provided>',
