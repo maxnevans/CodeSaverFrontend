@@ -31,7 +31,7 @@ class List extends PureComponent {
             onCodeEdit={this.codeEditHandler} onCodeDelete={this.codeDeleteHandler}/>);
 
         return (
-            <div>{listItems}</div>
+            <div className="code-list">{listItems}</div>
         );
     }
 }

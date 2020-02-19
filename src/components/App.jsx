@@ -20,8 +20,6 @@ class App extends PureComponent {
         this.goForwardHandler = this.goForwardHandler.bind(this);
     }
 
-
-
     getCurrentScreen(currentScreen, currentScreenData) {
         switch(currentScreen) {
             case App.MAIN_SCREEN:

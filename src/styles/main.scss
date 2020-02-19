@@ -1,3 +1,19 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#root {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+.app {
+    padding: 10px;
+}
+
 .code-source {
     min-height: 500px;
     min-width: 900px;
@@ -50,4 +66,40 @@
 
 .code-source-wrong {
     border: 2px solid red;
+}
+
+.code-list {
+    width: 100%;
+}
+
+.code-list-item {
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(59deg, rgba(32,43,56,1) 0%, rgba(65,65,115,1) 49%, rgba(59,42,62,1) 100%);
+    margin: 10px 0;
+    border-radius: 5px;
+    outline: 1px solid transparent;
+    transition: .2s ease-in-out;
+}
+
+.code-list-item:hover {
+    outline: 1px solid rgb(180, 27, 155);
+}
+
+.code-list-item .code-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.code-list-item .code-created:before {
+    content: 'Created: ';
+}
+
+.code-list-item .code-edited:before {
+    content: 'Edited: ';
+}
+
+.code-list-item .code-created,
+.code-list-item .code-edited {
+    padding: 2px;
 }

@@ -33,13 +33,11 @@ class CodeSampleListItem extends PureComponent {
 
         return (
             <div className="code-list-item">
-                <hr/>
                 <div className="code-name">{this.props.codeName}</div>
                 {editedItem}
                 <div className="code-created">{this.props.codeCreated}</div>
                 <button onClick={this.editCodeClickHandle}>Edit</button>
                 <button onClick={this.deleteCodeClickHandle}>Delete</button>
-                <hr/>
             </div>
         );
     }
