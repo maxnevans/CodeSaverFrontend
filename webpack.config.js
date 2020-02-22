@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
     const devMode = argv.mode !== 'production';
 
     return {
-        devtool : 'inline-source-map',
+        devtool: 'inline-source-map',
         mode: "development",
         entry: {
             polyfill: '@babel/polyfill',
@@ -16,6 +16,11 @@ module.exports = (env, argv) => {
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: devMode ? "[name].js" : "[name].[hash].js"
+        },
+        optimization: {
+            splitChunks: {
+                chunks: 'all',
+            },
         },
         module: {
             rules: [
