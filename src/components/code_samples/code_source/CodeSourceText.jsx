@@ -10,6 +10,41 @@ class CodeSourceText extends PureComponent {
 
         this.codeEditor = React.createRef();
         this.codeChangeHandler = this.codeChangeHandler.bind(this);
+        this.keyDownHandler = this.keyDownHandler.bind(this);
+    }
+
+    keyDownHandler(event) {
+        if (event.key == 'Enter') {
+            event.preventDefault();
+            return this.insertTextAtCursor('\n\r');
+        }
+
+        if (event.key == 'Tab') {
+            event.preventDefault();
+            return this.insertTextAtCursor(' '.repeat(4));
+        }
+    }
+
+    insertTextAtCursor(text) {
+        var sel, range, textNode;
+        if (window.getSelection) {
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
+                textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+    
+                // Move caret to the end of the newly inserted text node
+                range.setStart(textNode, textNode.length);
+                range.setEnd(textNode, textNode.length);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        } else if (document.selection && document.selection.createRange) {
+            range = document.selection.createRange();
+            range.pasteHTML(text);
+        }
     }
 
     selectionSaveCaretPosition(container) {
@@ -71,6 +106,10 @@ class CodeSourceText extends PureComponent {
 
     componentDidUpdate() {
         this.restoreCaretPosition();
+    }
+
+    componentDidMount() {
+        this.codeEditor.current.addEventListener('keydown', this.keyDownHandler);
     }
 
     render() {        
