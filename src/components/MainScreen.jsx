@@ -4,6 +4,7 @@ import CodeSampleEditor from './code_samples/CodeSampleEditor';
 import List from './code_samples/List';
 import coreApp from '../core/app';
 import CodeSource from './code_samples/code_source/CodeSource';
+import UserBar from './common/UserBar';
 
 class MainScreen extends PureComponent {
     constructor(props) {
@@ -22,6 +23,7 @@ class MainScreen extends PureComponent {
         this.codeSaveHandler = this.codeSaveHandler.bind(this);
         this.codeDeleteHandler = this.codeDeleteHandler.bind(this);
         this.codeChangeHandler = this.codeChangeHandler.bind(this);
+        this.signOutHandler = this.signOutHandler.bind(this);
     }
 
     componentDidMount() {
@@ -114,9 +116,19 @@ class MainScreen extends PureComponent {
             .catch(err => console.log(err));
     }
 
+    signOutHandler() {
+        coreApp.logoutUser()
+            .then(res => {
+                coreApp.autologin(false);
+                this.props.onGoForward(App.LOGIN_SCREEN, null, true);
+            })
+            .catch(error => console.log(error));
+    }
+
     render() {
         return (
             <div className="main-screen">
+                <UserBar login={this.props.screenData.user.login} onSignOut={this.signOutHandler}/>
                 <CodeSampleEditor code={this.state.newCodeSample} onChange={this.codeChangeHandler} onSave={this.codeSaveHandler}/>
                 <List list={this.state.codeSamplesList} onDelete={this.codeDeleteHandler} onEdit={this.codeEditHandler } />
             </div>

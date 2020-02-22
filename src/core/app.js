@@ -1,8 +1,10 @@
 import QueryManager from "./aux/query-manager";
+import CookieManager from "./aux/cookie-manager";
 
 class App {
     constructor() {
         this._qm = new QueryManager();
+        this._cm = new CookieManager();
     }
 
     async getList() {
@@ -31,6 +33,32 @@ class App {
 
     async deleteCodeSample(sampleId) {
         return this._qm.deleteCodeSample(sampleId);
+    }
+
+    async registerUser(login, password) {
+        return this._qm.registerUser(login, password);
+    }
+
+    async loginUser(login, password) {
+        return this._qm.loginUser(login, password);
+    }
+
+    async logoutUser() {
+        return this._qm.logoutUser();
+    }
+
+    async testAuth() {
+        return this._qm.testAuth();
+    }
+
+    autologin(state) {
+        if (state == null)
+            return this._cm.isAutologin(); 
+
+        if (state)
+            this._cm.setAutologin();
+        else
+            this._cm.unsetAutologin();
     }
 }
 

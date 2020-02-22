@@ -39,3 +39,23 @@ export const DELETE_CODE = {
     url: (details) => API_SOURCE + '/code/' + details[0],
     method: 'delete'
 }
+
+export const REGISTER_USER = {
+    url: () => API_SOURCE + '/register',
+    method: 'post'
+}
+
+export const LOGIN_USER = {
+    url: () => API_SOURCE + '/auth',
+    method: 'put'
+}
+
+export const TEST_AUTH = {
+    url: () => API_SOURCE + '/test_auth',
+    method: 'get'
+}
+
+export const LOGOUT_USER = {
+    url: () => API_SOURCE + '/logout',
+    method: 'put'
+}

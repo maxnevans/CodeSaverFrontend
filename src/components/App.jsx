@@ -1,17 +1,19 @@
 import React, { PureComponent } from "react";
 import MainScreen from "./MainScreen";
 import EditScreen from "./EditScreen";
+import LoginScreen from "./LoginScreen";
 
 class App extends PureComponent {
     static MAIN_SCREEN = 'main';
     static EDIT_SCREEN = 'edit';
+    static LOGIN_SCREEN = 'login';
 
     constructor(props) {
         super(props);
 
         this.state = {
             screens: [
-                App.MAIN_SCREEN
+                App.LOGIN_SCREEN
             ],
             nextScreenData: null
         };
@@ -22,6 +24,8 @@ class App extends PureComponent {
 
     getCurrentScreen(currentScreen, currentScreenData) {
         switch(currentScreen) {
+            case App.LOGIN_SCREEN:
+                return <LoginScreen onGoForward={this.goForwardHandler} />;
             case App.MAIN_SCREEN:
                 return <MainScreen onGoForward={this.goForwardHandler} screenData={currentScreenData} />;
             case App.EDIT_SCREEN:
