@@ -12,9 +12,10 @@ class CodeSampleEditor extends PureComponent {
         this.codeNameChangeHandler = this.codeNameChangeHandler.bind(this);
         this.saveCodeClickHandler = this.saveCodeClickHandler.bind(this);
         this.codeChangeHandler = this.codeChangeHandler.bind(this);
+        this.keyDownHandler = this.keyDownHandler.bind(this);
     }
 
-    saveCodeClickHandler(event) {
+    saveCodeClickHandler() {
         const code = this.props.code;
 
         let isWrong = false;
@@ -38,6 +39,13 @@ class CodeSampleEditor extends PureComponent {
             return;
 
         this.props.onSave();
+    }
+
+    keyDownHandler(event) {
+        if (event.ctrlKey && event.key == 's') {
+            event.preventDefault();
+            return this.saveCodeClickHandler();
+        }
     }
     
     codeNameChangeHandler(event) {
@@ -65,9 +73,7 @@ class CodeSampleEditor extends PureComponent {
         const editedItem = this.props.code.edited_time ? <div className="code-edited">{this.props.code.edited_time}</div> : null;
 
         return (
-            
-
-            <div className="code-creator">
+            <div className="code-creator" onKeyDown={this.keyDownHandler}>
                 <input 
                     placeholder="Sample name" 
                     type="text" 
