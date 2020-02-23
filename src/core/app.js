@@ -1,54 +1,24 @@
 import QueryManager from "./aux/query-manager";
 import CookieManager from "./aux/cookie-manager";
+import ResponseManager from "./aux/response-manager";
+import Querier from './querier';
 
 class App {
-    constructor() {
+    constructor(glob) {
         this._qm = new QueryManager();
         this._cm = new CookieManager();
+
+        this._setupHandlers(glob);
     }
 
-    async getList() {
-        return this._qm.getList();
+    _setupHandlers(glob) {
+        glob.onunhandledrejection = this._unhandledRejectionHandler.bind(this);
     }
 
-    async getCodeSample(sampleId) {
-        return this._qm.getCodeSample(sampleId);
-    }
+    _unhandledRejectionHandler(event) {
+        event.preventDefault();
 
-    async editCodeSample(sampleId, codeName, newCodeContent) {
-        return this._qm.editCodeSample(sampleId, codeName, newCodeContent);
-    }
-
-    async uploadEditCodeSample(sampleId, codeName, fileCodeSample) {
-        return this._qm.uploadEditCodeSample(sampleId, codeName, fileCodeSample);
-    }
-
-    async createCodeSample(codeName, newCodeSample) {
-        return this._qm.createCodeSample(codeName, newCodeSample);
-    }
-
-    async uploadCreateCodeSample(codeName, fileCodeSample) {
-        return this._qm.uploadCreateCodeSample(codeName, fileCodeSample);
-    }
-
-    async deleteCodeSample(sampleId) {
-        return this._qm.deleteCodeSample(sampleId);
-    }
-
-    async registerUser(login, password) {
-        return this._qm.registerUser(login, password);
-    }
-
-    async loginUser(login, password) {
-        return this._qm.loginUser(login, password);
-    }
-
-    async logoutUser() {
-        return this._qm.logoutUser();
-    }
-
-    async testAuth() {
-        return this._qm.testAuth();
+        console.log('Unahandled Rejection: ', event.reason);
     }
 
     autologin(state) {
@@ -60,8 +30,12 @@ class App {
         else
             this._cm.unsetAutologin();
     }
-}
 
-const coreApp = new App();
+    prepareToQuery(queryHandler) {
+        const responseManager = new ResponseManager(queryHandler.getHandlers());
+        return new Querier(this._qm, responseManager);
+    }
+}
+const coreApp = new App(window);
 
 export default coreApp;

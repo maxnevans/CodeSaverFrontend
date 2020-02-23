@@ -91,15 +91,80 @@ body {
     font-weight: bold;
 }
 
-.code-list-item .code-created:before {
+.code-created:before {
     content: 'Created: ';
 }
 
-.code-list-item .code-edited:before {
+.code-edited:before {
     content: 'Edited: ';
 }
 
-.code-list-item .code-created,
-.code-list-item .code-edited {
+.code-created,
+.code-edited {
     padding: 2px;
+}
+
+
+.popups {
+    z-index: 1;
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    background-color: rgba(82, 82, 82, 0.575);
+}
+
+.popups.has-popup {
+    display: block;
+}
+
+.login-popup {
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.616);
+    border-radius: 10px;
+}
+
+.login-popup {
+    .switch-login-register {
+        width: 100%;
+        background: rgb(34, 132, 197);
+        margin-bottom: 10px;
+    }
+
+    .switch-login-register:hover {
+        background: rgb(18, 63, 83);
+    }
+
+    .login-button,
+    .register-button {
+        margin: 0;
+        width: 100%;
+    }
+
+    input {
+        width: 100%;
+        margin: 0;
+        margin-bottom: 10px;
+        display: block;
+        box-sizing: border-box;
+    }
+}
+
+.user-bar {
+    display: flex;
+
+    .login {
+        flex: 1 0 auto;
+    }
 }

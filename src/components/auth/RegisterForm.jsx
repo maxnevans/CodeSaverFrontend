@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 
 class RegisterForm extends PureComponent {
+    static defaultProps = {
+        userExists: false
+    };
+    
     constructor(props) {
         super(props);
 
@@ -61,7 +65,7 @@ class RegisterForm extends PureComponent {
     }
 
     render() {
-        const wrongLogin = this.state.wrongLogin ? 'input-wrong' : '';
+        const wrongLogin = this.state.wrongLogin || this.props.userExists ? 'input-wrong' : '';
         const wrongPassword = this.state.wrongPassword ? 'input-wrong' : '';
         const wrongRepassword = this.state.wrongRepassword ? 'input-wrong' : '';
 
@@ -88,7 +92,7 @@ class RegisterForm extends PureComponent {
                     placeholder="Repeat password" 
                     autoComplete="off"
                 />
-                <button onClick={this.registerHandler}>Register</button>
+                <button onClick={this.registerHandler} className={'register-button'}>Register</button>
             </form>
         );
     }

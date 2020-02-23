@@ -20,7 +20,7 @@ class UserBar extends PureComponent {
         return (
             <div className="user-bar">
                 <div className="login">Login: {this.props.login}</div>
-                <button onClick={this.signOutHandler}>Sign out</button>
+                <button className={'signout-button'} onClick={this.signOutHandler}>Sign out</button>
             </div>
         );
     }

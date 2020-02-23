@@ -69,8 +69,11 @@ class CodeSampleEditor extends PureComponent {
         const inputNameWrong = this.state.isWrongName ? 'input-wrong' : '';
         const inputCodeWrong = this.state.isWrongCode;
 
-        const createdItem = this.props.code.created_time ? <div className="code-created">{this.props.code.created_time}</div> : null;
-        const editedItem = this.props.code.edited_time ? <div className="code-edited">{this.props.code.edited_time}</div> : null;
+        const createdItem = this.props.code.created_time ? 
+            <div className="code-created">{new Date(this.props.code.created_time).toLocaleString()}</div> : null;
+            
+        const editedItem = this.props.code.edited_time ? 
+            <div className="code-edited">{(new Date(this.props.code.edited_time)).toLocaleString()}</div> : null;
 
         return (
             <div className="code-creator" onKeyDown={this.keyDownHandler}>

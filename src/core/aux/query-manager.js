@@ -18,7 +18,7 @@ class QueryManager {
     }
 
     async getCodeSample(sampleId) {
-        return this._performJSONQuery(GET_CODE, [sampleId]).body;
+        return this._performJSONQuery(GET_CODE, [sampleId]);
     }
 
     async editCodeSample(sampleId, codeName, newCodeSample) {
@@ -27,7 +27,7 @@ class QueryManager {
         form.append('code-name', codeName);
         form.append('code-sample', newCodeSample);
 
-        return this._performJSONQuery(EDIT_CODE, [sampleId], form, false).body;
+        return this._performJSONQuery(EDIT_CODE, [sampleId], form, false);
     }
 
     async uploadEditCodeSample(sampleId, codeName, codeSampleFile) {
@@ -36,9 +36,7 @@ class QueryManager {
         form.append('code-name', codeName);
         form.append('code-file', codeSampleFile);
 
-        console.log(form);
-
-        return this._performJSONQuery(UPLOAD_EDIT_CODE, [sampleId], form, false).body;
+        return this._performJSONQuery(UPLOAD_EDIT_CODE, [sampleId], form, false);
     } 
 
     async uploadCreateCodeSample(codeName, codeSampleFile) {
@@ -47,7 +45,7 @@ class QueryManager {
         form.append('code-name', codeName);
         form.append('code-file', codeSampleFile);
 
-        return this._performJSONQuery(UPLOAD_CREATE_CODE, null, form, false).body;
+        return this._performJSONQuery(UPLOAD_CREATE_CODE, null, form, false);
     }
 
     async createCodeSample(codeName, newCodeSample) {
@@ -56,11 +54,11 @@ class QueryManager {
         form.append('code-name', codeName);
         form.append('code-sample', newCodeSample);
 
-        return this._performJSONQuery(CREATE_CODE, null, form, false).body;
+        return this._performJSONQuery(CREATE_CODE, null, form, false);
     }
 
     async deleteCodeSample(sampleId) {
-        return this._performJSONQuery(DELETE_CODE, [sampleId]).body;
+        return this._performJSONQuery(DELETE_CODE, [sampleId]);
     }
 
     async registerUser(login, password) {
@@ -69,7 +67,7 @@ class QueryManager {
         form.append('login', login);
         form.append('password', password);
 
-        return this._performJSONQuery(REGISTER_USER, null, form, false).body;
+        return this._performJSONQuery(REGISTER_USER, null, form, false);
     }
 
     async loginUser(login, password) {
@@ -78,24 +76,15 @@ class QueryManager {
         form.append('login', login);
         form.append('password', password);
 
-        const res = await this._performJSONQuery(LOGIN_USER, null, form, false);
-
-        if (res.status != 200)
-            throw res;
-
-        return res.body;
+        return this._performJSONQuery(LOGIN_USER, null, form, false);
     }
 
     async testAuth() {
-        const res = await this._performJSONQuery(TEST_AUTH);
-
-        if (res.status != 200)
-            throw res;
-        return res.body;
+        return this._performJSONQuery(TEST_AUTH);
     }
 
     async logoutUser() {
-        return this._performJSONQuery(LOGOUT_USER).body;
+        return this._performJSONQuery(LOGOUT_USER);
     }
 
     async _performJSONQuery(destination, destinationDetails = null, bodyData = null, isJSON = true) {

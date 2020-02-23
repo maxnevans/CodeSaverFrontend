@@ -1,78 +1,104 @@
 import React, { PureComponent } from "react";
-import MainScreen from "./MainScreen";
-import EditScreen from "./EditScreen";
-import LoginScreen from "./LoginScreen";
+import Screens from './Screens';
+import Popups from './Popups';
+import UserBar from './common/UserBar';
+import coreApp from "../core/app";
+import QueryHandler from "../core/query-handler";
+import HttpCodes from "../core/http-codes";
 
 class App extends PureComponent {
-    static MAIN_SCREEN = 'main';
-    static EDIT_SCREEN = 'edit';
-    static LOGIN_SCREEN = 'login';
-
     constructor(props) {
         super(props);
 
         this.state = {
-            screens: [
-                App.LOGIN_SCREEN
-            ],
-            nextScreenData: null
+            screens: [{screen: Screens.MAIN_SCREEN, data: null}],
+            popups: [],
+            user: {}
         };
-
-        this.goBackHandler = this.goBackHandler.bind(this);
-        this.goForwardHandler = this.goForwardHandler.bind(this);
+        
+        this.popupRequestHandler = this.popupRequestHandler.bind(this);
+        this.screenRequestHandler = this.screenRequestHandler.bind(this);
+        this.popupsChangeHandler = this.popupsChangeHandler.bind(this);
+        this.screensChangeHandler = this.screensChangeHandler.bind(this);
+        this.userChangeHandler = this.userChangeHandler.bind(this);
+        this.signOutHandler = this.signOutHandler.bind(this);
     }
 
-    getCurrentScreen(currentScreen, currentScreenData) {
-        switch(currentScreen) {
-            case App.LOGIN_SCREEN:
-                return <LoginScreen onGoForward={this.goForwardHandler} />;
-            case App.MAIN_SCREEN:
-                return <MainScreen onGoForward={this.goForwardHandler} screenData={currentScreenData} />;
-            case App.EDIT_SCREEN:
-                return <EditScreen onGoBack={this.goBackHandler} onGoForward={this.goForwardHandler} screenData={currentScreenData} />;
-        }
+    signOutHandler() {
+        const qh = new QueryHandler();
+
+        qh.setupHandler(HttpCodes.OK, () => {
+            coreApp.autologin(false);
+            this.setState({user: {}});
+        });
+        
+        coreApp.prepareToQuery(qh).logoutUser();
     }
-    
-    goForwardHandler(nextScreen, data, shouldClearHistory) {
-        this.setState((state, props) => {
 
-            let screens;
+    componentDidMount() {
+        const qh = new QueryHandler();
 
-            if (shouldClearHistory) {
-                screens = [nextScreen];
-            } else {
-                screens = state.screens.slice();
-                screens.push(nextScreen);
-            }
+        qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
+            this.setState({user: body});
+        });
 
-            return {
-                screens,
-                nextScreenData: data
-            };
+        coreApp.prepareToQuery(qh).testAuth();
+    }
+
+    popupsChangeHandler(popups) {
+        this.setState({popups});
+    }
+
+    screensChangeHandler(screens) {
+        this.setState({screens: screens});
+    }
+
+    userChangeHandler(userData) {
+        this.setState(state => ({user: {...state.user, ...userData}}));
+    }
+
+    screenRequestHandler(screenType, screenData) {
+        this.setState(state => {
+            const screens = state.screens.slice();
+            const newScreen = {screen: screenType, data: screenData};
+
+            screens.push(newScreen);
+
+            return {screens};
         });
     }
 
-    goBackHandler(data) {
-        this.setState((state, props) => {
-            let screens = state.screens.slice();
+    popupRequestHandler(popupType, popupData) {
+        this.setState(state => {
+            const popups = state.popups.slice();
+            const newPopup = {popup: popupType, data: popupData};
 
-            if (screens.length > 1)
-                screens = screens.slice(0, -1);
-
-            return {
-                screens
-            };
+            popups.splice(0, 0, newPopup);
+            return {popups};
         });
     }
 
     render() {
-        const currentScreen = this.state.screens[this.state.screens.length - 1];
-        const screenItem = this.getCurrentScreen(currentScreen, this.state.nextScreenData);
+        const userBar = this.state.user.login ? <UserBar login={this.state.user.login} onSignOut={this.signOutHandler}/> : null;
 
         return (
             <div className="app">
                 <h1>Code Saver</h1>
-                {screenItem}
+                {userBar}
+                <Popups 
+                    popups={this.state.popups} 
+                    user={this.state.user}
+                    onPopupsChange={this.popupsChangeHandler}
+                    onScreenRequest={this.screenRequestHandler}
+                    onUserChange={this.userChangeHandler}
+                />
+                <Screens 
+                    screens={this.state.screens} 
+                    user={this.state.user}
+                    onScreensChange={this.screensChangeHandler} 
+                    onPopupRequest={this.popupRequestHandler}
+                    onUserChange={this.userChangeHandler}
+                />
             </div>
         );
     }
