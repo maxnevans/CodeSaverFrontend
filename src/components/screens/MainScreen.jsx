@@ -25,7 +25,6 @@ class MainScreen extends PureComponent {
         this.codeChangeHandler = this.codeChangeHandler.bind(this);
 
         this._getListResponseHandler = this.getGetListResponseHandler();
-        this._deleteResponseHandler = this.getDeleteResponseHandler();
     }
 
     getGetListResponseHandler() {
@@ -63,7 +62,7 @@ class MainScreen extends PureComponent {
             list.splice(0, 0, code);
 
 
-            this.onCodeSamplesChange(list);
+            this.props.onCodeSamplesChange(list);
             this.setState({newCodeSample: this.getCleanCodeNewSample()});
         });
 
@@ -72,7 +71,7 @@ class MainScreen extends PureComponent {
         return qh;
     }
 
-    getDeleteResponseHandler() {
+    getDeleteResponseHandler(sampleId) {
         const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled response: ${httpCode}`, body));
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
@@ -128,13 +127,13 @@ class MainScreen extends PureComponent {
 
         if (code.type == CodeSource.SOURCE_FILES) {
             const file = code.data[0];
-            coreApp.prepareToQuery(code).uploadCreateCodeSample(code.name, file);
+            coreApp.prepareToQuery(this.getSaveCodeResponseHandler(code)).uploadCreateCodeSample(code.name, file);
             return;
         }
     }
 
     codeDeleteHandler(sampleId) {
-        coreApp.prepareToQuery(this._deleteResponseHandler).deleteCodeSample(sampleId);
+        coreApp.prepareToQuery(this.getDeleteResponseHandler(sampleId)).deleteCodeSample(sampleId);
     }
 
     render() {
