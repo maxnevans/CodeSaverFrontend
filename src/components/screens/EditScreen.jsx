@@ -14,8 +14,6 @@ class EditScreen extends PureComponent {
             codeRetrieved: false,
             code: {
                 name: '',
-                edited_time: '',
-                created_time: '',
                 type: CodeSource.SOURCE_TEXT,
                 data: ''
             }
@@ -73,7 +71,7 @@ class EditScreen extends PureComponent {
     }
 
     componentDidUpdate() {
-        if (!this.state.codeRetrieved || this.props.user.login)
+        if (!this.state.codeRetrieved || !this.props.user.login)
             coreApp.prepareToQuery(this._getCodeSampleResponseHandler).getCodeSample(this.props.codeSampleId);
     }
 
