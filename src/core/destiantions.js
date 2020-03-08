@@ -59,3 +59,8 @@ export const LOGOUT_USER = {
     url: () => API_SOURCE + '/logout',
     method: 'put'
 }
+
+export const GRAPHQL = {
+    url: () => '/graphql',
+    method: 'post'
+}

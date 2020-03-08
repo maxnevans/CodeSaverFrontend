@@ -36,7 +36,7 @@ class EditScreen extends PureComponent {
     getGetCodeSampleResponseHandler() {
         const qh = new QueryHandler((httpCode, body) => console.log(`Default response handler for ${httpCode}: `, body));
 
-        qh.setupHandler(HttpCodes.OK, (httpCode, body) => this.setState({codeRetrieved: true, code: this.convertCode(body)}));
+        qh.setupHandler(HttpCodes.OK, (httpCode, body) => this.setState({codeRetrieved: true, code: this.convertCode(body.data.code)}));
         qh.setupHandler(HttpCodes.UNAUTHORIZED, (httpCode, body) => this.props.onUnauthorized());
 
         return qh;

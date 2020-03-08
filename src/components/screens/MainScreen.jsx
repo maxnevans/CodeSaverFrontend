@@ -31,7 +31,11 @@ class MainScreen extends PureComponent {
         const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled response: ${httpCode}`, body));
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
-            const codeSamples = body.map(code => ({
+            if (body.data.codeList == null) {
+                return this.props.onUnauthorized();
+            }
+
+            const codeSamples = body.data.codeList.map(code => ({
                 ...code, 
                 created_time: (new Date(code.created_time).toLocaleString()),
                 edited_time: code.edited_time ? (new Date(code.edited_time).toLocaleString()) : null
@@ -51,11 +55,15 @@ class MainScreen extends PureComponent {
         const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled response: ${httpCode}`, body));
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
+            if (body.data.id == null)
+                return this.props.onUnauthorized();
+
+
             const codeSamples = this.props.codeSamples;
 
             let list = codeSamples.slice();
 
-            code.id = body.codeSampleId;
+            code.id = body.data.id;
             code.data = null;
             code.created_time = (new Date()).toLocaleString();
 

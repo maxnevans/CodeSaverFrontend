@@ -38,7 +38,7 @@ class LoginPopup extends PureComponent {
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
             this.setState({userExists: false});
-            coreApp.prepareToQuery(this.getLoginQueryHandler(userData)).loginUser(body.login, body.password);
+            coreApp.prepareToQuery(this.getLoginQueryHandler(userData)).loginUser(body.data.user.login, body.data.user.password);
         });
 
         qh.setupHandler(HttpCodes.NOT_ACCEPTABLE, (httpCode, body) => this.setState({userExists: true}));
@@ -50,7 +50,7 @@ class LoginPopup extends PureComponent {
         const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled query: ${httpCode}`, body));
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
-            this.props.onSuccess(body);
+            this.props.onSuccess(body.data.user);
         });
 
         return qh;

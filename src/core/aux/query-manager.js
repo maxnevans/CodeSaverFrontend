@@ -9,25 +9,22 @@ import {
     LOGIN_USER,
     REGISTER_USER,
     TEST_AUTH,
-    LOGOUT_USER
+    LOGOUT_USER,
+    GRAPHQL
 } from "../destiantions";
+import Queries from "../queries";
 
 class QueryManager {
     async getList() {
-        return this._performJSONQuery(GET_LIST);
+        return this._graphQuery(Queries.CODE_LIST());
     }
 
     async getCodeSample(sampleId) {
-        return this._performJSONQuery(GET_CODE, [sampleId]);
+        return this._graphQuery(Queries.CODE(sampleId));
     }
 
     async editCodeSample(sampleId, codeName, newCodeSample) {
-        const form = new FormData();
-
-        form.append('code-name', codeName);
-        form.append('code-sample', newCodeSample);
-
-        return this._performJSONQuery(EDIT_CODE, [sampleId], form, false);
+        return this._graphQuery(Queries.EDIT_CODE(sampleId, codeName, newCodeSample));
     }
 
     async uploadEditCodeSample(sampleId, codeName, codeSampleFile) {
@@ -49,42 +46,31 @@ class QueryManager {
     }
 
     async createCodeSample(codeName, newCodeSample) {
-        const form = new FormData();
-
-        form.append('code-name', codeName);
-        form.append('code-sample', newCodeSample);
-
-        return this._performJSONQuery(CREATE_CODE, null, form, false);
+        return this._graphQuery(Queries.CREATE_CODE(codeName, newCodeSample));
     }
 
     async deleteCodeSample(sampleId) {
-        return this._performJSONQuery(DELETE_CODE, [sampleId]);
+        return this._graphQuery(Queries.DELETE_CODE(sampleId));
     }
 
     async registerUser(login, password) {
-        const form = new FormData();
-
-        form.append('login', login);
-        form.append('password', password);
-
-        return this._performJSONQuery(REGISTER_USER, null, form, false);
+        return this._graphQuery(Queries.REGISTER(login, password));
     }
 
     async loginUser(login, password) {
-        const form = new FormData();
-
-        form.append('login', login);
-        form.append('password', password);
-
-        return this._performJSONQuery(LOGIN_USER, null, form, false);
+        return this._graphQuery(Queries.AUTHORIZE(login, password));
     }
 
     async testAuth() {
-        return this._performJSONQuery(TEST_AUTH);
+        return this._graphQuery(Queries.ACCOUNT());
     }
 
     async logoutUser() {
-        return this._performJSONQuery(LOGOUT_USER);
+        return this._graphQuery(Queries.UNAUTHORIZE());
+    }
+
+    async _graphQuery(queryData) {
+        return this._performJSONQuery(GRAPHQL, null, queryData);
     }
 
     async _performJSONQuery(destination, destinationDetails = null, bodyData = null, isJSON = true) {
@@ -93,7 +79,15 @@ class QueryManager {
         };
 
         if ((options.method != 'GET') && (options.method != 'HEAD')) {
-            options.body = isJSON ? JSON.stringify(bodyData) : bodyData;
+            if (isJSON) {
+                options.body = JSON.stringify(bodyData);
+                options.headers = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                };
+            } else  {
+                options.body = bodyData;
+            }
         }
         
         const response = await fetch(destination.url(destinationDetails), options);

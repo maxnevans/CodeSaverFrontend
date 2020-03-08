@@ -39,7 +39,10 @@ class App extends PureComponent {
         const qh = new QueryHandler();
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
-            this.setState({user: body});
+            if (body.data.user == null)
+                return;
+                
+            this.setState({user: body.data.user});
         });
 
         coreApp.prepareToQuery(qh).testAuth();
