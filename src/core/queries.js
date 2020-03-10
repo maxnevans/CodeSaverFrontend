@@ -1,4 +1,15 @@
 export default class Queries {
+    static AUTH_INFO = () => ({
+        query: `
+            query AuthInfo{
+                authInfo {
+                    id
+                    token
+                }
+            }
+        `
+    });
+
     static AUTHORIZE = (login, password) => ({
         query: `
             mutation Authorize($login: String, $password: String){
@@ -15,6 +26,7 @@ export default class Queries {
         query: `
             query Account{
                 user: account {
+                    id
                     login
                     password
                 }

@@ -48,6 +48,10 @@ class Querier {
         this.executeQuery(this._qm.testAuth.bind(this._qm));
     }
 
+    getAuthInfo() {
+        this.executeQuery(this._qm.getAuthInfo.bind(this._qm));
+    }
+
     executeQuery(queryFunc) {
         queryFunc()
             .then(res => this._catchResponse(res, this._rm))

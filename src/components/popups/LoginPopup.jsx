@@ -46,11 +46,23 @@ class LoginPopup extends PureComponent {
         return qh;
     }
 
+    getAuthInfoQueryHandler(user) {
+        const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled query: ${httpCode}`, body));
+
+        qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
+            const {id, token} = body.data.authInfo;
+            coreApp.authenticateSocket(user.id, token);
+            this.props.onSuccess(user);
+        });
+
+        return qh;
+    }
+
     getTestAuthQueryHandler() {
         const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled query: ${httpCode}`, body));
 
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
-            this.props.onSuccess(body.data.user);
+            coreApp.prepareToQuery(this.getAuthInfoQueryHandler(body.data.user)).getAuthInfo();
         });
 
         return qh;

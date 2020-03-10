@@ -20,11 +20,11 @@ class QueryManager {
     }
 
     async getCodeSample(sampleId) {
-        return this._graphQuery(Queries.CODE(sampleId));
+        return this._graphQuery(Queries.CODE(parseInt(sampleId)));
     }
 
     async editCodeSample(sampleId, codeName, newCodeSample) {
-        return this._graphQuery(Queries.EDIT_CODE(sampleId, codeName, newCodeSample));
+        return this._graphQuery(Queries.EDIT_CODE(parseInt(sampleId), codeName, newCodeSample));
     }
 
     async uploadEditCodeSample(sampleId, codeName, codeSampleFile) {
@@ -33,7 +33,7 @@ class QueryManager {
         form.append('code-name', codeName);
         form.append('code-file', codeSampleFile);
 
-        return this._performJSONQuery(UPLOAD_EDIT_CODE, [sampleId], form, false);
+        return this._performJSONQuery(UPLOAD_EDIT_CODE, [parseInt(sampleId)], form, false);
     } 
 
     async uploadCreateCodeSample(codeName, codeSampleFile) {
@@ -50,7 +50,7 @@ class QueryManager {
     }
 
     async deleteCodeSample(sampleId) {
-        return this._graphQuery(Queries.DELETE_CODE(sampleId));
+        return this._graphQuery(Queries.DELETE_CODE(parseInt(sampleId)));
     }
 
     async registerUser(login, password) {
@@ -63,6 +63,10 @@ class QueryManager {
 
     async testAuth() {
         return this._graphQuery(Queries.ACCOUNT());
+    }
+
+    async getAuthInfo() {
+        return this._graphQuery(Queries.AUTH_INFO());
     }
 
     async logoutUser() {

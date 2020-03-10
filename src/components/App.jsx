@@ -41,7 +41,17 @@ class App extends PureComponent {
         qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
             if (body.data.user == null)
                 return;
-                
+
+            const user = body.data.user;
+            const qhAuth = new QueryHandler();
+
+            qhAuth.setupHandler(HttpCodes.OK, (httpCode, body) => {
+                const {token} = body.data.authInfo;
+                coreApp.authenticateSocket(user.id, token);
+            });
+
+            coreApp.prepareToQuery(qhAuth).getAuthInfo();
+
             this.setState({user: body.data.user});
         });
 

@@ -2,11 +2,13 @@ import QueryManager from "./aux/query-manager";
 import CookieManager from "./aux/cookie-manager";
 import ResponseManager from "./aux/response-manager";
 import Querier from './querier';
+import io from "socket.io-client";
 
 class App {
     constructor(glob) {
         this._qm = new QueryManager();
         this._cm = new CookieManager();
+        this._io = io.connect('http://localhost:8080');
 
         this._setupHandlers(glob);
     }
@@ -29,6 +31,18 @@ class App {
             this._cm.setAutologin();
         else
             this._cm.unsetAutologin();
+    }
+
+    addSocketMessageHandler(message, handler) {
+        this._io.on(message, handler);
+    }
+
+    authenticateSocket(userId, token) {
+        this._io.on('auth', ({socketId}) => {
+            this._cm.setSocketId(socketId);
+        });
+
+        this._io.emit('auth', {id: userId, token});
     }
 
     prepareToQuery(queryHandler) {

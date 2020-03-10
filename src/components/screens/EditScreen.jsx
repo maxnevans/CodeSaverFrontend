@@ -78,6 +78,8 @@ class EditScreen extends PureComponent {
     convertCode(dbCode) {
         return {
             ...dbCode,
+            created_time: new Date(dbCode['created_time']).toLocaleString(),
+            edited_time: dbCode['edited_time'] ? new Date(dbCode['edited_time']).toLocaleString() : null,
             type: CodeSource.SOURCE_TEXT,
             data: dbCode.code
         };

@@ -19,12 +19,84 @@ class MainScreen extends PureComponent {
             }
         };
 
+        this.setupSocketActions();
+
         this.codeEditHandler = this.codeEditHandler.bind(this);
         this.codeSaveHandler = this.codeSaveHandler.bind(this);
         this.codeDeleteHandler = this.codeDeleteHandler.bind(this);
         this.codeChangeHandler = this.codeChangeHandler.bind(this);
 
+        this.updateCodeInList = this.updateCodeInList.bind(this);
+        this.deleteCodeFromList = this.deleteCodeFromList.bind(this);
+        this.createCodeToList = this.createCodeToList.bind(this);
+
         this._getListResponseHandler = this.getGetListResponseHandler();
+    }
+
+    setupSocketActions() {
+        coreApp.addSocketMessageHandler('codeEdited', this.updateCodeInList.bind(this));
+        coreApp.addSocketMessageHandler('codeDeleted', this.deleteCodeFromList.bind(this));
+        coreApp.addSocketMessageHandler('codeCreated', this.createCodeToList.bind(this));
+    }
+
+    updateCodeInList({id: sampleId}) {
+        console.log('updateCodeInList executing...', sampleId);
+        const qh = new QueryHandler((httpCode, body) => console.log(`Unhandled response: ${httpCode}`, body));
+
+        qh.setupHandler(HttpCodes.OK, (httpCode, body) => {
+            const code = body.data.code;
+
+            if (code == null)
+                return this.props.onUnauthorized();
+
+            const editedCodeIndex = this.props.codeSamples.reduce((acc, codeFromList, index) => 
+                codeFromList.id == code.id && codeFromList.edited_time != code.edited_time ? index : acc, -1);
+
+            if (editedCodeIndex == -1)
+                return;
+
+            const codeList = this.props.codeSamples.slice();
+            codeList[editedCodeIndex] = {
+                ...code,
+                created_time: new Date(code.created_time).toLocaleString(),
+                edited_time: new Date(code.edited_time).toLocaleString()
+            };
+
+            this.props.onCodeSamplesChange(codeList);
+        });
+
+        coreApp.prepareToQuery(qh).getCodeSample(sampleId);
+    }
+
+    deleteCodeFromList({id: sampleId}) {
+        console.log('deleteCodeFromList executing...', sampleId);
+
+        const codeIndex = this.props.codeSamples.reduce((acc, codeFromList, index) => codeFromList.id == sampleId ? index : acc, -1);
+        console.log(codeIndex);
+        if (codeIndex == -1)
+            return;
+
+        const codeList = this.props.codeSamples.slice();
+        codeList.splice(codeIndex, 1);
+
+        this.props.onCodeSamplesChange(codeList);
+    }
+
+    createCodeToList(code) {
+        console.log('createCodeToList executing...', code);
+
+        const codeIndex = this.props.codeSamples.reduce((acc, codeFromList, index) => codeFromList.id == code.id ? index : acc, -1);
+
+        if (codeIndex != -1)
+            return;
+
+        const codeList = this.props.codeSamples.slice();
+        codeList.unshift({
+            ...code,
+            created_time: new Date(code.createdTime).toLocaleString()
+        });
+
+        this.props.onCodeSamplesChange(codeList);
     }
 
     getGetListResponseHandler() {
@@ -35,15 +107,15 @@ class MainScreen extends PureComponent {
                 return this.props.onUnauthorized();
             }
 
-            const codeSamples = body.data.codeList.map(code => ({
-                ...code, 
-                created_time: (new Date(code.created_time).toLocaleString()),
-                edited_time: code.edited_time ? (new Date(code.edited_time).toLocaleString()) : null
-            }));
-
-            this.props.onCodeSamplesChange(codeSamples);
-
+            const codeSamples = body.data.codeList.map(code => {
+                return {
+                    ...code,
+                    created_time: (new Date(code.created_time).toLocaleString()),
+                    edited_time: code.edited_time ? new Date(code.edited_time).toLocaleString() : null
+                };
+            });
             this.setState({codeSamplesRetrieved: true});
+            this.props.onCodeSamplesChange(codeSamples);
         });
 
         qh.setupHandler(HttpCodes.UNAUTHORIZED, () => this.props.onUnauthorized());
@@ -58,8 +130,14 @@ class MainScreen extends PureComponent {
             if (body.data.id == null)
                 return this.props.onUnauthorized();
 
+            this.setState({newCodeSample: this.getCleanCodeNewSample()});
 
-            const codeSamples = this.props.codeSamples;
+            const codeSamples = this.props.codeSamples.slice();
+
+            const codeIndex = codeSamples.reduce((acc, codeFromList, index) => codeFromList.id == body.data.id ? index : acc, -1);
+
+            if (codeIndex != -1)
+                return;
 
             let list = codeSamples.slice();
 
@@ -71,7 +149,7 @@ class MainScreen extends PureComponent {
 
 
             this.props.onCodeSamplesChange(list);
-            this.setState({newCodeSample: this.getCleanCodeNewSample()});
+           
         });
 
         qh.setupHandler(HttpCodes.UNAUTHORIZED, () => this.props.onUnauthorized());
