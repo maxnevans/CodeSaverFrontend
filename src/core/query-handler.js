@@ -1,30 +1,32 @@
 import HttpCodes from "./http-codes";
 
 class QueryHandler {
+    #handlers;
+
     constructor(defaultQueryHandler) {
-        this._handlers = new Map();
+        this.#handlers = new Map();
 
 
         defaultQueryHandler = defaultQueryHandler == null ? () => {} : defaultQueryHandler;
-        this._setupDefault(defaultQueryHandler);
+        this.#setupDefault(defaultQueryHandler);
     }
 
-    _setupDefault(defaultHandler) {
-        Object.getOwnPropertyNames(HttpCodes).forEach(httpCodeName => this._handlers.set(HttpCodes[httpCodeName], defaultHandler));
+    #setupDefault(defaultHandler) {
+        Object.getOwnPropertyNames(HttpCodes).forEach(httpCodeName => this.#handlers.set(HttpCodes[httpCodeName], defaultHandler));
     }
 
     setupHandler(httpCode, listener) {
-        this._handlers.set(httpCode, listener);
+        this.#handlers.set(httpCode, listener);
     }
 
     getHandlers() {
-        return this._handlers;
+        return this.#handlers;
     }
 
     copy() {
         const copy = new QueryHandler(null);
 
-        this._handlers.forEach((listener, statusCode) => copy._handlers.set(statusCode, listener));
+        this.#handlers.forEach((listener, statusCode) => copy.#handlers.set(statusCode, listener));
 
         return copy;
     }

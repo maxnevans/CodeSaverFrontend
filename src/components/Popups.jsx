@@ -1,45 +1,26 @@
 import React, { PureComponent } from 'react';
-import LoginPopup from './popups/LoginPopup';
+import AuthPopup from './popups/AuthContainer';
+import { AUTH_POPUP } from './PopupTypes';
 
 class Popups extends PureComponent {
-    static LOGIN_POPUP = 'login';
 
-    constructor(props) {
-        super(props);
-
-        this.loginSuccessHandler = this.loginSuccessHandler.bind(this);
-    }
-
-    loginSuccessHandler(userData) {
-        this.props.onPopupsChange(this.props.popups.slice(0, -1));
-        this.props.onUserChange(userData);
-    }
-
-    getCurrentPopupEntry(popups) {
-        if (popups.length == 0)
-            return {popup: null, data: null};
-
-        return popups[this.props.popups.length - 1];
-    }
-
-    getCurrentPopupItem(popupType, popupData) {
-        switch(popupType) {
-            case Popups.LOGIN_POPUP:
-                return <LoginPopup onSuccess={this.loginSuccessHandler}/>;
+    #getPopup(type) {
+        switch(type) {
+            case AUTH_POPUP:
+                return <AuthPopup />
         }
-
         return null;
     }
 
     render() {
-        const currentPopup = this.getCurrentPopupEntry(this.props.popups);
-        const popupItem = this.getCurrentPopupItem(currentPopup.popup, currentPopup.data);
+        if (this.props.currentPopup == null)
+            return null;
 
-        const popupClass = popupItem ? 'has-popup' : '';
+        this.#getPopup(this.props.currentPopup.popupType);
 
         return (
-            <div className={popupClass + ' popups'} >
-                {popupItem}
+            <div className={'has-popup popups'} >
+                {popup}
             </div>
         );
     }

@@ -1,108 +1,28 @@
 import React, { PureComponent } from "react";
-import Popups from "./Popups";
-import MainScreen from "./screens/MainScreen";
-import EditScreen from "./screens/EditScreen";
+import MainScreen from "./screens/MainScreenContainer";
+import EditScreen from "./screens/EditScreenContainer";
+import { MAIN_SCREEN, EDIT_SCREEN } from "./ScreenType";
 
 class Screens extends PureComponent {
-    static MAIN_SCREEN = 'main';
-    static EDIT_SCREEN = 'edit';
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            codeSamplesList: []
-        };
-
-        this.goBackHandler = this.goBackHandler.bind(this);
-        this.goForwardHandler = this.goForwardHandler.bind(this);
-        this.unauthorizedHandler = this.unauthorizedHandler.bind(this);
-        this.codeSampleEditHandler = this.codeSampleEditHandler.bind(this);
-        this.codeSampleSaveHandler = this.codeSampleSaveHandler.bind(this);
-        this.changeCodeSamplesHandler = this.changeCodeSamplesHandler.bind(this);
-    }
-
-    changeCodeSamplesHandler(codeSamplesList) {
-        this.setState({codeSamplesList});
-    }
-
-    getCurrentScreenItem(currentScreen, currentScreenData) {
-        switch(currentScreen) {
-            case Screens.MAIN_SCREEN:
-                return <MainScreen
-                    onUnauthorized={this.unauthorizedHandler}
-                    onCodeSampleEdit={this.codeSampleEditHandler}
-                    codeSamples={this.state.codeSamplesList}
-                    onCodeSamplesChange={this.changeCodeSamplesHandler}
-                    user={this.props.user}
-                />;
-            case Screens.EDIT_SCREEN:
-                return <EditScreen
-                    onUnauthorized={this.unauthorizedHandler}
-                    codeSampleId={currentScreenData}
-                    onCodeSampleSave={this.codeSampleSaveHandler}
-                    user={this.props.user}
-                />;
+    #getScreen(type) {
+        switch(type) {
+            case MAIN_SCREEN:
+                return <MainScreen />;
+            case EDIT_SCREEN:
+                return <EditScreen />;
         }
-    }
-
-    goForwardHandler(nextScreen, data, shouldClearHistory) {
-        let screens = this.props.screens.slice();
-
-        if (shouldClearHistory) {
-            screens = [{screen: nextScreen, data: data}];
-        } else {
-            screens.push({screen: nextScreen, data: data});
-        }
-
-        this.props.onScreensChange(screens);
-    }
-
-    goBackHandler() {
-        let screens = this.props.screens.slice();
-
-        if (screens.length > 1) {
-            screens = screens.slice(0, -1);
-
-            this.props.onScreensChange(screens);
-        }
-    }
-
-    unauthorizedHandler() {
-        this.props.onPopupRequest(Popups.LOGIN_POPUP);
-    }
-
-    codeSampleEditHandler(sampleId) {
-        this.goForwardHandler(Screens.EDIT_SCREEN, sampleId);
-    }
-
-    codeSampleSaveHandler(codeSample) {
-        this.setState(state => {
-            const codeSamplesList = state.codeSamplesList.slice();
-
-            codeSamplesList.map(code => {
-                if (code.id != codeSample.id)
-                    return code;
-
-                return codeSample;
-            });
-
-            return {codeSamplesList};
-        });
-
-        this.goBackHandler();
+        return null;
     }
 
     render() {
-        const currentScreen = this.props.screens[this.props.screens.length - 1];
-        const screenItem = this.getCurrentScreenItem(currentScreen.screen, currentScreen.data);
+        if (this.props.currentScreen == null)
+            return null;
 
-        const backButtonItem = this.props.screens.length > 1 ? <button onClick={this.goBackHandler}>Go Back</button> : null;
+        const screen = this.#getScreen(this.props.currentScreen.screenType);
 
         return (
-            <div className="screens">
-                {backButtonItem}
-                {screenItem}
+            <div className="screen">
+                {screen}
             </div>
         );
     }
