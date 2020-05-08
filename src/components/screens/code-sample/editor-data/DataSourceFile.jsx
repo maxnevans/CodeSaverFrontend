@@ -1,6 +1,10 @@
 import React, {PureComponent} from "react";
+import PropTypes from "prop-types";
 
 class DataSourceFile extends PureComponent {
+    static propTypes = {
+        fileNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+    };
     constructor(props) {
         super(props);
     }

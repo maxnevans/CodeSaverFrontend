@@ -1,11 +1,6 @@
-import React from "react";
 import {connect} from "react-redux";
-import App from "./App"
+import App from "./App";
 import {popScreen, pushScreen } from "../store/screens/actions";
-
-const AppContainer = (props) => {
-    return <App {...props} />;
-};
 
 const mapStateToProps = (state) => {
     return {
@@ -15,9 +10,9 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapActionsToProps = {
+const mapDispatchToProps = {
     popScreen,
     pushScreen
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(AppContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

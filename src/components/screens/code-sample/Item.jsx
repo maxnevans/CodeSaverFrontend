@@ -1,15 +1,24 @@
 import React, { PureComponent } from "react";
 import { EDIT_SCREEN } from "../../ScreenType";
+import PropTypes from "prop-types";
 
-class CodeSampleListItem extends PureComponent {
+export default class Item extends PureComponent {
+    static propTypes = {
+        pushScreen: PropTypes.func.isRequired,
+        editCodeSample: PropTypes.func.isRequired,
+        deleteCodeSample: PropTypes.func.isRequired,
+        codeSample: PropTypes.object.isRequired,
+        user: PropTypes.object,
+    };
+    
     constructor(props) {
         super(props);
 
-        this.onEditCodeClick = this.onEditCodeClick.bind(this);
+        this.onViewCodeClick = this.onViewCodeClick.bind(this);
         this.onDeleteCodeClick = this.onDeleteCodeClick.bind(this);
     }
 
-    onEditCodeClick() {
+    onViewCodeClick() {
         this.props.pushScreen(EDIT_SCREEN);
         this.props.editCodeSample(this.props.codeSample);
     }
@@ -19,16 +28,16 @@ class CodeSampleListItem extends PureComponent {
     }
 
     render() {
+        const deleteButton = this.props.codeSample.author.id === this.props.user?.id ? <button onClick={this.onDeleteCodeClick}>Delete</button> : null;
+        const editTime = this.props.codeSample.editedTime ? <div className="code-edited">{new Date(this.props.codeSample.editedTime).toUTCString()}</div> : null;
         return (
             <div className="code-list-item">
                 <div className="code-name">{this.props.codeSample.name ?? "<undefined>"}</div>
-                <div className="code-edited">{this.props.codeSample.editedTime ?? null}</div>
-                <div className="code-created">{this.props.codeSample.createdTime ?? "<undefined>"}</div>
-                <button onClick={this.onEditCodeClick}>Edit</button>
-                <button onClick={this.onDeleteCodeClick}>Delete</button>
+                {editTime}
+                <div className="code-created">{new Date(this.props.codeSample.createdTime ?? 0).toUTCString()}</div>
+                <button onClick={this.onViewCodeClick}>Show</button>
+                {deleteButton}
             </div>
         );
     }
 }
-
-export default CodeSampleListItem;

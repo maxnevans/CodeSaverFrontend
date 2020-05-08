@@ -1,8 +1,20 @@
 import React, { PureComponent } from "react";
 import DataSourceText from "./DataSourceText";
 import DataSourceFile from "./DataSourceFile";
+import PropTypes from "prop-types";
 
 class DataSource extends PureComponent {
+    static propTypes = {
+        onSourceChange: PropTypes.func.isRequired,
+        data: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.arrayOf(PropTypes.instanceOf(File)),
+        ]).isRequired,
+        isWrong: PropTypes.bool.isRequired,
+        dataType: PropTypes.string.isRequired,
+        disabled: PropTypes.bool.isRequired,
+    };
+    
     static SOURCE_FILES = 'files';
     static SOURCE_TEXT = 'text';
 
@@ -10,7 +22,7 @@ class DataSource extends PureComponent {
         super(props);
 
         this.state = {
-            isFilesMode: false,
+            isDragging: false,
             fileNames: []
         };
 
@@ -22,33 +34,38 @@ class DataSource extends PureComponent {
     }
 
     codeDragEnterHandler(event) {
-        this.setState({isFilesMode: true});
         event.preventDefault();
+
+        if (this.props.disabled)
+            return;
+
+        this.setState({isDragging: true});
     }
 
     codeDragLeaveHandler(event) {
-        this.setState({isFilesMode: false});
         event.preventDefault();
+
+        if (this.props.disabled)
+            return;
+
+        this.setState({isDragging: false});
     }
 
     codeDropHandler(event) {
         event.persist();
         event.preventDefault();
 
-        const files = event.dataTransfer.files;
+        if (this.props.disabled)
+            return;
 
-        Array.from(files).forEach(file => {
+        this.setState({isDragging: false});
 
-            // Not handling multiple files
-            //const fileNames = this.state.fileNames.slice();
+        let files = [...event.dataTransfer.files];
 
-            // Handling single file with replace of old
-            const fileNames = [];
+        if (Array.isArray(this.props.data))
+            files = this.props.data.concat?.(files);
 
-            fileNames.push(file.name);
-
-            this.setState({fileNames});
-        });
+        this.setState({fileNames: files.map(file => file.name)});
 
         this.props.onSourceChange(DataSource.SOURCE_FILES, files);
     }
@@ -61,16 +78,16 @@ class DataSource extends PureComponent {
         event.preventDefault();
     }
 
-    #getSource(isFilesMode) {
+    _getSource(isFilesMode) {
         if (isFilesMode)
-            return <DataSourceFile fileNames={this.state.fileNames} />;                
+            return <DataSourceFile disabled={this.props.disabled} fileNames={this.state.fileNames} />;                
 
-        return <DataSourceText code={this.props.data} onCodeChange={this.codeTextChangeHandler} />;
+        return <DataSourceText disabled={this.props.disabled} code={this.props.data} onCodeChange={this.codeTextChangeHandler} />;
     }
 
     render() {
-        const codeDisplayElement = this.#getSource(this.state.isFilesMode);
-        const codeSourceWrong = this.props.isWrong ? 'code-source-wrong' : '';
+        const codeDisplayElement = this._getSource(this.state.isDragging || this.props.dataType == DataSource.SOURCE_FILES);
+        const codeSourceWrong = this.props.isWrong ? 'input-wrong' : '';
 
         return (
             <div 

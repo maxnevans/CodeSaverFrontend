@@ -7,8 +7,8 @@ const defaultState = {
 };
 
 export const loginReducer = (state = defaultState, action) => {
-    switch(action?.type) {
-        case LOGIN_SET:
+    switch (action?.type) {
+        case LOGIN_SET: 
             return {...state, login: action.payload};
         case PASSWORD_SET:
             return {...state, password: action.payload};

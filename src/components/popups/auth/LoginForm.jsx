@@ -1,6 +1,17 @@
 import React, { PureComponent } from 'react';
+import PropTypes from "prop-types";
 
 class LoginForm extends PureComponent {
+    static propTypes = {
+        setPassword: PropTypes.func.isRequired,
+        setLogin: PropTypes.func.isRequired,
+        loginUser: PropTypes.func.isRequired,
+        clearError: PropTypes.func.isRequired,
+        popPopup: PropTypes.func.isRequired,
+        login: PropTypes.string.isRequired,
+        password: PropTypes.string.isRequired,
+        error: PropTypes.object,
+    };
     constructor(props) {
         super(props);
 
@@ -23,7 +34,8 @@ class LoginForm extends PureComponent {
         this.setState({wrongPasswordOrLogin: false});
     }
 
-    onLoginButtonClick() {
+    onLoginButtonClick(event) {
+        event.preventDefault();
         this.props.loginUser({login: this.props.login, password: this.props.password});
         this.setState({didLogin: true});
     }
@@ -34,7 +46,7 @@ class LoginForm extends PureComponent {
             this.props.clearError();
         }
 
-        if (this.props.didLogin && this.props.error == null) {
+        if (this.state.didLogin && this.props.error == null) {
             this.props.popPopup();
         }
     }

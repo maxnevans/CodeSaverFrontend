@@ -1,13 +1,17 @@
-import merge from "lodash.merge";
-import {SET_DATA, SET_NAME, SET_CODE_SAMPLE, SAVE_CODE_SAMPLE, SET_ERROR, CLEAR_ERROR, CLEAR_DID_SAVE, CLEAR_DID_FETCH} from "./actions";
+import clone from "lodash.clonedeep";
+import {SET_DATA, SET_NAME, SET_CODE_SAMPLE, SET_ERROR, 
+    CLEAR_ERROR, CLEAR_DID_SAVE, CLEAR_DID_FETCH, SET_DID_SAVE, SET_DID_DELETE, 
+    SET_DID_FETCH, CLEAR_DID_DELETE, CLEAR_CODE_SAMPLE} from "./actions";
 
-export const defaultState = {
+const defaultState = {
     codeSample: {
         name: null,
         type: null,
         data: null,
         createdTime: null,
         editedTime: null,
+        author: null,
+        mods: null
     },
     error: null,
     didSave: false,
@@ -15,25 +19,31 @@ export const defaultState = {
 };
 
 export const codeSampleEditApiReducer = (state = defaultState, action) => {
-    switch(action?.type) {
+    switch (action?.type) {
         case SET_NAME:
-            return merge(state, {code: {name: action.payload}});
+            return {...clone(state), codeSample: {name: action.payload}};
         case SET_DATA:
-            return merge(state, {code: action.payload});
+            return {...clone(state), codeSample: action.payload};
+        case CLEAR_CODE_SAMPLE:
+            return {...clone(state), codeSample:defaultState.codeSample};
         case SET_CODE_SAMPLE:
-            return merge(state, {code: action.payload});
-        case SAVE_CODE_SAMPLE:
-            return merge(state, {code: action.payload});
+            return {...clone(state), codeSample: action.payload};
         case SET_ERROR:
-            return merge(state, {error: action.payload});
+            return {...clone(state), error: action.payload};
         case CLEAR_ERROR:
-            return merge(state, {error: defaultState.error});
+            return {...clone(state), error: defaultState.error};
+        case SET_DID_SAVE:
+            return {...clone(state), didSave: true};
+        case SET_DID_FETCH:
+            return {...clone(state), didFetch: true};
+        case SET_DID_DELETE:
+            return {...clone(state), didDelete: true};
         case CLEAR_DID_SAVE:
-            return merge(state, {didSave: defaultState.didSave});
+            return {...clone(state), didSave: defaultState.didSave};
         case CLEAR_DID_FETCH:
-            return merge(state, {didFetch: defaultState.didFetch});
-        case CLEAR_DID_SAVE:
-            return merge(state, {didSave: defaultState.didSave});
+            return {...clone(state), didFetch: defaultState.didFetch};
+        case CLEAR_DID_DELETE:
+            return {...clone(state), didDelete: defaultState.didDelete};
     }
 
     return state;

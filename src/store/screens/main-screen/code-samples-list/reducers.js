@@ -1,4 +1,4 @@
-import merge from "lodash.merge";
+import clone from "lodash.clonedeep";
 import {codeSampleReducer} from "./code-sample/reducers";
 import { DELETE_CODE_SAMPLE, ADD_CODE_SAMPLE, SET_ERROR, CLEAR_ERROR, SET_CODE_SAMPLES } from "./actions";
 
@@ -9,26 +9,30 @@ const defaultState = {
 
 export const codeSamplesListReducer = (state = defaultState, action) => {
     if (action?.type.startsWith("screens/mainScreen/codeSamplesList/codeSample/")) {
-        return merge(state, {codeSamples: new Map(state.codeSamples).set(action.payload.id, codeSampleReducer(null, action.payload))});
+        const copy = clone(state);
+        const codeSampleState = copy.codeSamples.get(action.codeSampleId);
+        const codeSample = codeSampleReducer(codeSampleState, action);
+        copy.codeSamples.set(action.codeSampleId, codeSample);
+        return copy;
     }
 
-    switch(action?.type) {
+    switch (action?.type) {
         case ADD_CODE_SAMPLE: {
-            let codeSamples = new Map(state);
-            codeSamples.set(action.payload.id, action.payload);
-            return merge(state, {codeSamples});
+            const copy = clone(state);
+            copy.codeSamples.set(action.payload.id, action.payload);
+            return copy;
         }
         case DELETE_CODE_SAMPLE: {
-            let codeSamples = new Map(state);
-            codeSamples.delete(action.payload.id);
-            return merge(state, {codeSamples});
+            const copy = clone(state);
+            copy.codeSamples.delete(action.payload.id);
+            return copy;
         }
         case SET_CODE_SAMPLES:
-            return merge(state, {codeSamples: new Map(action.payload)});
+            return {...clone(state), codeSamples: new Map(action.payload)};
         case SET_ERROR:
-            return merge(state, {error: action.payload});
+            return {...clone(state), error: action.payload};
         case CLEAR_ERROR:
-            return merge(state, {error: defaultState.error});
+            return {...clone(state), error: defaultState.error};
     }
 
     return state;

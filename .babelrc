@@ -1,36 +1,60 @@
 {
-  "presets": [
-    "@babel/preset-env",
-    "@babel/preset-react"
-  ],
-  "plugins": [
-    [
-      "@babel/plugin-proposal-class-properties",
-      {
-        "loose" : true
-      }
+    "plugins": [
+        [
+            "prismjs",
+            {
+                "languages": [
+                    "javascript",
+                    "css",
+                    "markup"
+                ],
+                "plugins": [
+                    "line-numbers"
+                ],
+                "theme": "tomorrow",
+                "css": true
+            }
+        ]
     ],
-    [
-      "@babel/plugin-proposal-private-methods",
-      {
-        "loose": true
-      }
-    ],
-    "@babel/plugin-proposal-optional-chaining",
-    [
-      "prismjs",
-      {
-        "languages": [
-          "javascript",
-          "css",
-          "markup"
-        ],
-        "plugins": [
-          "line-numbers"
-        ],
-        "theme": "tomorrow",
-        "css": true
-      }
-    ]
-  ]
+    "env": {
+        "development": {
+            "plugins": [
+                "@babel/plugin-proposal-class-properties",
+            ],
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "targets": {
+                            "esmodules": true,
+                            "chrome": "81"
+                        },
+                        "bugfixes": true,
+                        "shippedProposals": true
+                    }
+                ],
+                [
+                    "@babel/preset-react",
+                    {
+                        "development": true
+                    }
+                ]
+            ],
+        },
+        "production": {
+            "plugins": [
+                "@babel/plugin-proposal-class-properties",
+                "@babel/plugin-proposal-optional-chaining"
+            ],
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "browsers": "> 70%"
+                    }    
+                ],
+                "@babel/preset-react"
+            ]
+        }
+    }
 }

@@ -1,8 +1,15 @@
 import React, {PureComponent} from "react";
 import Prism from 'prismjs';
 import CodeEditor from 'react-simple-code-editor';
+import PropTypes from "prop-types";
 
 class DataSourceText extends PureComponent {
+    static propTypes = {
+        onCodeChange: PropTypes.func.isRequired,
+        code: PropTypes.string.isRequired,
+        disabled: PropTypes.bool.isRequired,
+    };
+
     static TAB_SIZE = 4;
 
     constructor(props) {
@@ -23,11 +30,13 @@ class DataSourceText extends PureComponent {
     render() {
         return (
             <CodeEditor
+                className="code-source-text-field"
+                disabled={this.props.disabled}
                 tabSize={DataSourceText.TAB_SIZE}
                 value={this.props.code}
                 onValueChange={this.codeChangeHandler}
                 highlight={this.codeHighlightHandler}
-                preClassName={'code-source-text language-javascript'}
+                preClassName={"language-javascript"}
             />
         );
     }

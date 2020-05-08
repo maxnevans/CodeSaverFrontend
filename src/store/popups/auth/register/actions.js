@@ -30,18 +30,18 @@ export const registerUser = (user) => {
     return {
         type: REGISTER_USER,
         payload: user
-    }
+    };
 };
 
 export const setError = (error) => {
     return {
         type: SET_ERROR,
         payload: error
-    }
+    };
 };
 
 export const clearError = () => {
     return {
         type: CLEAR_ERROR
-    }
+    };
 };

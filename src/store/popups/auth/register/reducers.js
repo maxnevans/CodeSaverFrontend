@@ -1,4 +1,4 @@
-import {LOGIN_SET, PASSWORD_SET, PASSWORD_REPEAT_SET, CLEAR_ERROR } from "./actions";
+import {LOGIN_SET, PASSWORD_SET, PASSWORD_REPEAT_SET, SET_ERROR, CLEAR_ERROR } from "./actions";
 
 const defaultState = {
     login: '',

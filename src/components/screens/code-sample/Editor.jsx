@@ -1,8 +1,19 @@
 import React, { PureComponent } from "react";
 import DataSource from "./editor-data/DataSource";
-import { DATA_TYPE_TEXT, DATA_TYPE_FILES } from "../../../store/screens/common/code-sample-edit/actions";
+import merge from "lodash.merge";
+import PropTypes from "prop-types";
 
 class Editor extends PureComponent {
+    static propTypes = {
+        editing: PropTypes.object.isRequired,
+        api: PropTypes.object.isRequired,
+        saveCodeSample: PropTypes.func.isRequired,
+        setCodeSampleName: PropTypes.func.isRequired,
+        setCodeSampleData: PropTypes.func.isRequired,
+        clearDidFetch: PropTypes.func.isRequired,
+        updateMods: PropTypes.func.isRequired,
+        user: PropTypes.object,
+    };
     constructor(props) {
         super(props);
 
@@ -10,19 +21,33 @@ class Editor extends PureComponent {
             isWrongName: false,
             isWrongCode: false,
             didSyncApiAndEditing: false,
-            didFetch: false,
-            didSave: false,
-            didDelete: false,
+            disabled: false,
         };
 
         this.onCodeNameChange = this.onCodeNameChange.bind(this);
         this.onSaveCode = this.onSaveCode.bind(this);
         this.onCodeDataChange = this.onCodeDataChange.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+        this.onIsReadPrivateChange = this.onIsReadPrivateChange.bind(this);
+        this.onIsWritePrivateChange = this.onIsWritePrivateChange.bind(this);
+    }
+
+    onIsReadPrivateChange(e) {
+        if (this.state.disabled)
+            return;
+
+        this.props.updateMods({isReadPrivate: e.target.checked});
+    }
+
+    onIsWritePrivateChange(e) {
+        if (this.state.disabled)
+            return;
+
+        this.props.updateMods({isWritePrivate: e.target.checked});
     }
 
     onSaveCode() {
-        const code = this.props.editingCodeSample;
+        const code = this.props.editing;
 
         let isWrong = false;
 
@@ -44,8 +69,7 @@ class Editor extends PureComponent {
         if (isWrong)
             return;
 
-        this.props.saveCodeSample(this.props.editingData);
-        this.setState({didSave: true});
+        this.props.saveCodeSample(merge({}, this.props.api.codeSample, this.props.editing));
     }
 
     onKeyDown(event) {
@@ -56,36 +80,36 @@ class Editor extends PureComponent {
     }
     
     onCodeNameChange(event) {
+        if (this.state.disabled)
+            return;
+
         this.setState({isWrongName: false});
         this.props.setCodeSampleName(event.target.value);
     }
 
     onCodeDataChange(sourceType, sourceData) {
+        if (this.state.disabled)
+            return;
+
         this.setState({isWrongCode: false});
         this.props.setCodeSampleData(sourceType, sourceData);
     }
 
-    componentDidMount() {
-        if (!this.props.didFetch) {
-            this.props.fetchCodeSample(this.props.apiCodeSample);
-            this.setState({
-                didSyncApiAndEditing: false,
-                didFetch: true,
-            });
-        }
-    }
-
     componentDidUpdate() {
         // Sync data from api and editable data
-        if (this.state.didFetch && !this.state.didSyncApiAndEditing) {
-            if (this.props.editingCodeSample.name.length == 0)
-                this.props.setCodeSampleName(this.props.apiCodeSample.name);
+        if (this.props.api.didFetch && !this.state.didSyncApiAndEditing && this.props.api.error == null) {
+            if (this.props.editing.name.length == 0)
+                this.props.setCodeSampleName(this.props.api.codeSample.name);
 
-            if (this.props.editingCodeSample.type == DATA_TYPE_TEXT && this.props.editingCodeSample.data.length == 0
-                || this.props.editingCodeSample.type == DATA_TYPE_FILES && this.props.editCodeSample.data[0].size == 0)
-                this.props.setCodeSampleData(this.props.apiCodeSample.type, this.props.apiCodeSample.data);
+            if (this.props.editing.type == DataSource.SOURCE_TEXT && this.props.editing.data.length == 0
+                || this.props.editing.type == DataSource.SOURCE_FILES && this.props.editing.data[0].size == 0)
+                this.props.setCodeSampleData(this.props.api.codeSample.type, this.props.api.codeSample.data);
 
-            this.setState({didSyncApiAndEditing: true, didFetch: false});
+            this.props.updateMods(this.props.api.codeSample.mods);
+
+            const disabled = this.props.api.codeSample.mods.isWritePrivate && this.props.api.codeSample.author.id != this.props.user?.id;
+            this.setState({didSyncApiAndEditing: true, disabled});
+            this.props.clearDidFetch();
         }
     }
 
@@ -93,29 +117,45 @@ class Editor extends PureComponent {
         const inputNameWrong = this.state.isWrongName ? 'input-wrong' : '';
         const inputCodeWrong = this.state.isWrongCode;
 
-        const createdTime = this.props.editingCodeSample?.createdTime;
-        const editedTime = this.props.editingCodeSample?.editedTime;
-
-        const createTimeDiv = createdTime ? <div className="code-created">{new Date(createdTime).toLocaleString()}</div> : null;
-        const editedTimeDiv = editedTime ? <div className="code-edited">{new Date(editedTime).toLocaleString()}</div> : null;
-
         return (
             <div className="code-creator" onKeyDown={this.onKeyDown}>
-                <input 
-                    placeholder="Sample name" 
-                    type="text" 
-                    className={"code-name " + inputNameWrong} 
-                    onChange={this.onCodeNameChange} 
-                    value={this.props.editingCodeSample.name} 
-                />
-                {createTimeDiv}
-                {editedTimeDiv}
+                <div className="line">
+                    <input 
+                        placeholder="Sample name" 
+                        type="text" 
+                        className={"code-name " + inputNameWrong} 
+                        onChange={this.onCodeNameChange} 
+                        value={this.props.editing.name} 
+                        disabled={this.state.disabled}
+                    />
+                    <div className="rights">
+                        <label>
+                            Is Read Private? 
+                            <input 
+                                type="checkbox" 
+                                checked={this.props.editing.mods.isReadPrivate} 
+                                onChange={this.onIsReadPrivateChange} 
+                                disabled={this.state.disabled}
+                                />
+                        </label>
+                        <label>
+                            Is Write Private? 
+                            <input 
+                                type="checkbox" 
+                                checked={this.props.editing.mods.isWritePrivate} 
+                                onChange={this.onIsWritePrivateChange} 
+                                disabled={this.state.disabled}
+                                />
+                        </label>
+                    </div>
+                </div>
                 <DataSource 
-                    data={this.props.editingCodeSample.data} 
-                    dataType={this.props.editingCodeSample.type} 
+                    disabled={this.state.disabled}
+                    data={this.props.editing.data} 
+                    dataType={this.props.editing.type} 
                     isWrong={inputCodeWrong} 
                     onSourceChange={this.onCodeDataChange} />
-                <button onClick={this.onSaveCode}>Save</button>
+                {!this.state.disabled ? <button onClick={this.onSaveCode}>Save</button> : null}
             </div>
         );
     }

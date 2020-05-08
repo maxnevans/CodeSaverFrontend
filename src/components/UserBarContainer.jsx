@@ -1,21 +1,18 @@
-import React from "react";
 import {connect} from "react-redux";
 import UserBar from "./UserBar";
 import {logoutUser} from "../store/user/actions";
-
-const UserBarContainer = (props) => {
-    return <UserBar
-        logoutUser={props.logoutUser} />;
-};
+import {pushScreen} from "../store/screens/actions";
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user,
+        user: state.user.user,
+        error: state.user.error,
     };
 };
 
-const mapActionsToProps = {
-    logoutUser
+const mapDispatchToProps = {
+    logoutUser,
+    pushScreen,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(UserBarContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(UserBar);

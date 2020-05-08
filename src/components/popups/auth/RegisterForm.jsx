@@ -1,6 +1,20 @@
 import React, { PureComponent } from 'react';
+import PropTypes from "prop-types";
 
 class RegisterForm extends PureComponent {
+    static propTypes = {
+        setLogin: PropTypes.func.isRequired,
+        setPassword: PropTypes.func.isRequired,
+        setPasswordRepeat: PropTypes.func.isRequired,
+        registerUser: PropTypes.func.isRequired,
+        clearError: PropTypes.func.isRequired,
+        popPopup: PropTypes.func.isRequired,
+        login: PropTypes.string.isRequired,
+        password: PropTypes.string.isRequired,
+        passwordRepeat: PropTypes.string.isRequired,
+        error: PropTypes.object,
+    };
+
     constructor(props) {
         super(props);
 
@@ -15,7 +29,7 @@ class RegisterForm extends PureComponent {
         this.onRegisterButtonClick = this.onRegisterButtonClick.bind(this);
     }
 
-    onLoginChange(event) {
+    onLoginChange = (event) => {
         this.props.setLogin(event.target.value);
     }
 
@@ -29,8 +43,9 @@ class RegisterForm extends PureComponent {
         this.props.setPasswordRepeat(event.target.value);
     }
 
-    onRegisterButtonClick() {
-        this.props.registerUser(this.props.login, this.props.password);
+    onRegisterButtonClick(event) {
+        event.preventDefault();
+        this.props.registerUser({login: this.props.login, password: this.props.password});
         this.setState({didRegister: true});
     }
 
@@ -40,26 +55,14 @@ class RegisterForm extends PureComponent {
             this.props.clearError();
         }
 
-        if (this.props.didRegister && this.props.error == null) {
+        if (this.state.didRegister && this.props.error == null) {
             this.props.popPopup();
         }
     }
 
-    onLoginChange(event) {
-        this.props.setLogin(event.target.value);
-    }
-
-    onPasswordChange(event) {
-        this.props.setPassword(event.target.value);
-    }
-
-    onPasswordRepeatChange(event) {
-        this.props.setPasswordRepeat(event.target.value);
-    }
-
     render() {
-        const wrongLogin = this.props.userExists ? 'input-wrong' : '';
-        const passwordsMismatch = this.state.passwordsMismatch && this.props.didRegister ? 'input-wrong' : '';
+        const wrongLogin = this.state.userExists ? 'input-wrong' : '';
+        const passwordsMismatch = this.state.passwordsMismatch && this.state.didRegister ? 'input-wrong' : '';
 
         return (
             <form className="register-form" autoComplete="off">

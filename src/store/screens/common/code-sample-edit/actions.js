@@ -1,2 +1,7 @@
-export const DATA_TYPE_TEXT = 'text';
-export const DATA_TYPE_FILES = 'files';
+export const CLEAR_CODE_SAMPLE = "screens/common/codeSampleEdit/CLEAR_CODE_SAMPLE";
+
+export const clearCodeSample = () => {
+    return {
+        type: CLEAR_CODE_SAMPLE
+    };
+};

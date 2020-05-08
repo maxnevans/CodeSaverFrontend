@@ -1,8 +1,13 @@
 import React, { PureComponent } from 'react';
-import LoginForm from './auth/LoginForm';
-import RegisterForm from './auth/RegisterForm';
+import LoginForm from './auth/LoginFormContainer';
+import RegisterForm from './auth/RegisterFormContainer';
+import PropTypes from "prop-types";
 
 class AuthPopup extends PureComponent {
+    static propTypes = {
+        switchType: PropTypes.func.isRequired,
+        authType: PropTypes.string,
+    };
     static LOGIN = "login";
     static REGISTER = "register";
     static #AUTH_CYCLE = [
@@ -16,22 +21,22 @@ class AuthPopup extends PureComponent {
         this.onSwitchAuthType = this.onSwitchAuthType.bind(this);
     }
 
-    #getFormItem(authType) {
-        switch(authType) {
+    _getFormItem(authType) {
+        switch (authType) {
             case AuthPopup.LOGIN:
-                return <LoginForm userExists={this.state.userExists} />
+                return <LoginForm />;
             case AuthPopup.REGISTER:
-                return <RegisterForm userExists={this.state.userExists} />;
+                return <RegisterForm />;
         }
         return null;            
     }
 
-    #getNextAuthType(current) {
-        return (AuthPopup.#AUTH_CYCLE.indexOf(current) + 1) % AuthPopup.#AUTH_CYCLE.length;
+    _getNextAuthType(current) {
+        return AuthPopup.#AUTH_CYCLE[(AuthPopup.#AUTH_CYCLE.indexOf(current) + 1) % AuthPopup.#AUTH_CYCLE.length];
     }
 
-    #getSwitchButtonText(authType) {
-        switch (this.#getNextAuthType(authType)) {
+    _getSwitchButtonText(authType) {
+        switch (this._getNextAuthType(authType)) {
             case AuthPopup.LOGIN:
                 return "Switch to login";
             case AuthPopup.REGISTER:
@@ -42,12 +47,12 @@ class AuthPopup extends PureComponent {
     }
 
     onSwitchAuthType() {
-        this.props.swithType(this.#getNextAuthType(this.props.authType));
+        this.props.switchType(this._getNextAuthType(this.props.authType));
     }
 
     render() {
-        const formItem = this.#getFormItem(this.props.authType);
-        const switchButtonContent = this.#getSwitchButtonText(this.props.authType);
+        const formItem = this._getFormItem(this.props.authType);
+        const switchButtonContent = this._getSwitchButtonText(this.props.authType);
 
         return (
             <div className="login-popup">

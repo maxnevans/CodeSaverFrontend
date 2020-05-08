@@ -1,11 +1,6 @@
-import React from "react";
 import {connect} from "react-redux";
-import NavigationBar from "./NavigationBar"
+import NavigationBar from "./NavigationBar";
 import {popScreen, pushScreen } from "../store/screens/actions";
-
-const NavigationBarContainer = (props) => {
-    return <NavigationBar {...props} />;
-};
 
 const mapStateToProps = (state) => {
     return {
@@ -13,9 +8,9 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapActionsToProps = {
+const mapDispatchToProps = {
     popScreen,
     pushScreen
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(NavigationBarContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar);

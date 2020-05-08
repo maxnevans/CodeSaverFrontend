@@ -1,10 +1,11 @@
-export const PUSH_POPUP = "popups/PUSH";
-export const POP_POPUP = "popups/POP";
+export const PUSH_POPUP = "popups/PUSH_POPUP";
+export const POP_POPUP = "popups/POP_POPUP";
 
-export const pushPopup = (popup) => {
+export const pushPopup = (popup, options = null) => {
     return {
         type: PUSH_POPUP,
-        payload: popup
+        payload: options,
+        popupType: popup
     };
 };
 

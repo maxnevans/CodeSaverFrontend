@@ -3,21 +3,21 @@ import Screens from './ScreensContainer';
 import Popups from './PopupsContainer';
 import UserBar from './UserBarContainer';
 import NavigationBar from "./NavigationBarContainer";
-import { MAIN_SCREEN } from "./ScreenType";
+import PropTypes from "prop-types";
 
 class App extends PureComponent {
-    constructor(props) {
-        super(props);
-
-        this.props.pushScreen(MAIN_SCREEN);
-    }
+    static propTypes = {
+        user: PropTypes.object,
+    };
 
     render() {
-        const userBar = this.props.user?.user ? <UserBar /> : null;
+        const userBar = this.props.user ? <UserBar /> : null;
         return (
             <div className="app">
-                <NavigationBar />
-                {userBar}
+                <div className="navigation">
+                    <NavigationBar />
+                    {userBar}
+                </div>
                 <Popups />
                 <Screens />
             </div>

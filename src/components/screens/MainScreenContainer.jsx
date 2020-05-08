@@ -1,11 +1,6 @@
-import React from "react";
 import {connect} from "react-redux";
 import {pushScreen, popScreen} from "../../store/screens/actions";
-import MainScreen from "./MainScreen"
-
-const MainScreenContainer = (props) => {
-    return <MainScreen {...props} />;
-};
+import MainScreen from "./MainScreen";
 
 const mapStateToProps = (state) => {
     const screenState = state.screens.stack[state.screens.stack.length - 1];
@@ -14,9 +9,9 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapActionsToProps = {
+const mapDispatchToProps = {
     pushScreen,
     popScreen,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(MainScreenContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);

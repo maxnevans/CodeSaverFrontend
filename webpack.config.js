@@ -2,13 +2,31 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const webpack = require("webpack");
 
-module.exports = (env, argv) => {
-    const devMode = argv.mode !== 'production';
+module.exports = (env) => {
+    const devMode = !env.production;
 
     return {
-        devtool: 'inline-source-map',
-        mode: "development",
+        devServer: {
+            port: 3000,
+            proxy: {
+                "/": "http://localhost:8080"
+            },
+            watchOptions: {
+                watch: true,
+            },
+            stats: {
+                children: false,
+                maxModules: 0,
+            }
+        },
+        stats: {
+            children: false,
+            maxModules: 0,
+        },
+        devtool: devMode ? 'eval-cheap-module-source-map' : '',
+        mode: devMode ? "development" : "production",
         entry: {
             polyfill: '@babel/polyfill',
             app: "./src/bootstrap.jsx",
@@ -27,6 +45,7 @@ module.exports = (env, argv) => {
                 {
                     test: /\.(js|jsx)$/,
                     include: path.resolve(__dirname, "src"),
+                    exclude: /node_modules/,
                     use: {
                         loader: "babel-loader"
                     }
@@ -59,6 +78,13 @@ module.exports = (env, argv) => {
                         }
                     ]
                 },
+                {
+                    test: /\.(png|svg|jpg|gif)$/,
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                    }
+                },
             ]
         },
         resolve: {
@@ -66,13 +92,16 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new CleanWebpackPlugin(),
+            new webpack.DefinePlugin({
+                "process.env.NODE_ENV": JSON.stringify(devMode ? "development" : "production"),
+            }),
             new HtmlWebpackPlugin({
                 template: './src/index.html'
             }),
             new MiniCssExtractPlugin({
                 filename: devMode ? "[name].css" : "[name].[hash].css",
                 chunkFilename: '[id].css'
-            })
+            }),
         ]
     };
 };
