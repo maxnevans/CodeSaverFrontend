@@ -22,10 +22,9 @@ module.exports = (env) => {
             }
         },
         stats: {
-            children: false,
-            maxModules: 0,
+            children: false
         },
-        devtool: devMode ? 'eval-cheap-module-source-map' : '',
+        devtool: devMode ? 'eval-cheap-module-source-map' : false,
         mode: devMode ? "development" : "production",
         entry: {
             polyfill: '@babel/polyfill',
@@ -64,9 +63,11 @@ module.exports = (env) => {
                         {
                             loader: 'postcss-loader',
                             options: {
-                                plugins: () => [
-                                    require('autoprefixer')
-                                ],
+                                postcssOptions: {
+                                    plugins: () => [
+                                        require('autoprefixer')
+                                    ],
+                                },
                                 sourceMap: true
                             }
                         },

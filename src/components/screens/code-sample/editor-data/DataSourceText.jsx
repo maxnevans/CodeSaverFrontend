@@ -34,6 +34,7 @@ class DataSourceText extends PureComponent {
                 disabled={this.props.disabled}
                 tabSize={DataSourceText.TAB_SIZE}
                 value={this.props.code}
+                padding={10}
                 onValueChange={this.codeChangeHandler}
                 highlight={this.codeHighlightHandler}
                 preClassName={"language-javascript"}
